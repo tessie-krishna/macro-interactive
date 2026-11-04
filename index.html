@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Macro Interactive Tools</title>
+<meta name="description" content="Interactive graphs for introductory macroeconomics students at Montclair State University.">
+<style>
+:root{
+  --bg:#f7f6f3; --card:#ffffff; --ink:#1d1d1f; --muted:#5d5d63; --line:#d9d7d1;
+  --accent:#c8102e; --accent-soft:#f6dde1; --blue:#1f5fa8; --blue-soft:#dce8f6;
+  --green:#2e7d4f; --ghost:#a5a39d; --grid:#ecebe7; --btn:#f0efeb; --btn-hover:#e4e2dc;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#16161a; --card:#212126; --ink:#ececf0; --muted:#a4a4ad; --line:#3a3a42;
+    --accent:#ff5a6e; --accent-soft:#4a2229; --blue:#6aa8f0; --blue-soft:#1f3350;
+    --green:#5cc489; --ghost:#6c6c75; --grid:#2c2c33; --btn:#2c2c33; --btn-hover:#3a3a42;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#16161a; --card:#212126; --ink:#ececf0; --muted:#a4a4ad; --line:#3a3a42;
+  --accent:#ff5a6e; --accent-soft:#4a2229; --blue:#6aa8f0; --blue-soft:#1f3350;
+  --green:#5cc489; --ghost:#6c6c75; --grid:#2c2c33; --btn:#2c2c33; --btn-hover:#3a3a42;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:28px 16px 60px}
+header h1{font-size:1.75rem;line-height:1.2;margin:0 0 6px}
+header p{margin:0;color:var(--muted)}
+.index{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:24px 0}
+.index h2{font-size:1rem;margin:0 0 8px}
+.index ul{margin:0;padding-left:20px}
+.index li{margin:4px 0}
+a{color:var(--blue)}
+section.tool{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;margin:24px 0}
+.chap{font-size:.8rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:0}
+section.tool h2{font-size:1.35rem;margin:2px 0 10px}
+.how{color:var(--muted);margin:0 0 14px}
+.grid2{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:720px){.grid2{grid-template-columns:minmax(0,1fr)}}
+svg{width:100%;height:auto;display:block}
+.controls{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.group{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.group .lab{font-weight:600;font-size:.9rem;margin-right:2px}
+button{font:inherit;font-size:.9rem;padding:7px 12px;border-radius:8px;border:1px solid var(--line);background:var(--btn);color:var(--ink);cursor:pointer}
+button:hover{background:var(--btn-hover)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+button.primary:hover{filter:brightness(1.08)}
+button:disabled{opacity:.45;cursor:default}
+.slider{margin:10px 0}
+.slider label{display:flex;justify-content:space-between;font-size:.92rem;font-weight:600}
+.slider input{width:100%;accent-color:var(--accent)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.stat{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.stat .k{font-size:.78rem;color:var(--muted);display:block}
+.stat .v{font-size:1.2rem;font-weight:700}
+.story{background:var(--blue-soft);border-radius:10px;padding:10px 12px;margin:10px 0;font-size:.95rem}
+.check{border-top:1px solid var(--line);margin-top:16px;padding-top:12px}
+.check p{margin:0 0 8px;font-weight:600}
+.check .opts{display:flex;flex-wrap:wrap;gap:8px}
+.check .fb{margin-top:8px;font-size:.95rem;min-height:1.4em}
+.ok{color:var(--green);font-weight:600}
+.no{color:var(--accent);font-weight:600}
+table{border-collapse:collapse;width:100%;font-size:.88rem;margin-top:8px}
+th,td{padding:5px 6px;border-bottom:1px solid var(--line);text-align:right}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--muted);font-weight:600}
+.tablebox{max-height:260px;overflow:auto}
+.bar{height:12px;border-radius:6px;background:var(--grid);overflow:hidden;margin:6px 0 2px}
+.bar > div{height:100%;background:var(--accent);width:0;transition:width .3s}
+.small{font-size:.85rem;color:var(--muted)}
+.axis text,.lbl{font-size:13px;fill:var(--ink)}
+.tick{font-size:12px;fill:var(--muted)}
+footer{color:var(--muted);font-size:.9rem;border-top:1px solid var(--line);padding-top:16px;margin-top:32px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.85rem;color:var(--muted);margin-top:4px}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Introductory Macroeconomics Interactive Tools</h1>
+  <p>Tessie Krishna, Feliciano School of Business, Montclair State University</p>
+</header>
+
+<nav class="index" aria-label="Tools by chapter">
+  <h2>Tools by chapter</h2>
+  <ul>
+    <li>Chapter 11, Aggregate expenditures. <a href="#multiplier">The spending multiplier, round by round</a></li>
+    <li>Chapter 12, Aggregate demand and aggregate supply. <a href="#adas">Shifts in AD and AS</a></li>
+    <li>Chapter 15, Money creation. <a href="#money">How banks create money</a></li>
+  </ul>
+</nav>
+
+<!-- ============ TOOL 1, MULTIPLIER ============ -->
+<section class="tool" id="multiplier">
+  <p class="chap">Chapter 11, Aggregate expenditures</p>
+  <h2>The spending multiplier, round by round</h2>
+  <p class="how">A business spends more on new equipment. That spending becomes someone's income. They spend part of it (the MPC) and save the rest, and their spending becomes someone else's income. Click <b>Next round</b> to follow the money, or <b>Show all rounds</b> to jump to the end.</p>
+  <div class="grid2">
+    <div>
+      <svg id="multSvg" viewBox="0 0 520 300" role="img" aria-label="Bar chart of new spending in each round"></svg>
+      <div class="legend"><span><span class="sw" style="background:var(--accent)"></span>Spent and passed on</span><span><span class="sw" style="background:var(--ghost)"></span>Saved</span></div>
+      <div class="controls">
+        <button class="primary" id="multNext">Next round</button>
+        <button id="multAll">Show all rounds</button>
+        <button id="multReset">Start over</button>
+      </div>
+    </div>
+    <div>
+      <div class="slider"><label for="mpc"><span>MPC (share of new income spent)</span><span id="mpcVal">0.75</span></label>
+        <input type="range" id="mpc" min="0.5" max="0.9" step="0.05" value="0.75"></div>
+      <div class="slider"><label for="dI"><span>New investment spending</span><span id="dIVal">$20 billion</span></label>
+        <input type="range" id="dI" min="10" max="100" step="10" value="20"></div>
+      <div class="stats">
+        <div class="stat"><span class="k">Multiplier, 1 / (1 − MPC)</span><span class="v" id="multM">4</span></div>
+        <div class="stat"><span class="k">Final change in real GDP</span><span class="v" id="multTotal">$80 billion</span></div>
+      </div>
+      <div class="small" id="multProgText">Real GDP has grown by $0 billion so far.</div>
+      <div class="bar" aria-hidden="true"><div id="multBar"></div></div>
+      <div class="story" id="multStory" aria-live="polite">Click Next round to see who gets the first $20 billion.</div>
+    </div>
+  </div>
+  <div class="tablebox"><table id="multTable" aria-label="Rounds of spending">
+    <thead><tr><th>Round</th><th>New income</th><th>Spent (MPC share)</th><th>Saved (MPS share)</th></tr></thead><tbody></tbody></table></div>
+  <div class="check" data-quiz>
+    <p>Check yourself. If the MPC is 0.8, what is the multiplier?</p>
+    <div class="opts">
+      <button data-a="no" data-fb="Not quite. That is 1 divided by the MPC. Use 1 divided by the MPS, which is 1 − 0.8.">1.25</button>
+      <button data-a="no" data-fb="Not quite. The MPS is 0.2 here, and the multiplier is 1 divided by the MPS.">2</button>
+      <button data-a="ok" data-fb="Yes. The MPS is 1 − 0.8 = 0.2, and 1 / 0.2 = 5. Set the slider to 0.80 to see it.">5</button>
+      <button data-a="no" data-fb="Not quite. The multiplier is 1 / (1 − MPC). Try setting the slider to 0.80.">8</button>
+    </div>
+    <div class="fb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ============ TOOL 2, AD/AS ============ -->
+<section class="tool" id="adas">
+  <p class="chap">Chapter 12, Aggregate demand and aggregate supply</p>
+  <h2>Shifts in AD and AS</h2>
+  <p class="how">Use the buttons to shift aggregate demand (AD) or short-run aggregate supply (SRAS). Watch what happens to the price level and real GDP, and compare real GDP with full employment (the LRAS line). The dashed gray lines show where the curves started.</p>
+  <div class="grid2">
+    <div>
+      <svg id="adasSvg" viewBox="0 0 520 400" role="img" aria-label="Aggregate demand and aggregate supply graph"></svg>
+    </div>
+    <div>
+      <div class="controls" style="margin-top:0">
+        <div class="group"><span class="lab">AD</span><button id="adL" aria-label="Shift AD left">◀ Left</button><button id="adR" aria-label="Shift AD right">Right ▶</button></div>
+        <div class="group"><span class="lab">SRAS</span><button id="asL" aria-label="Shift SRAS left">◀ Left</button><button id="asR" aria-label="Shift SRAS right">Right ▶</button></div>
+        <button id="adasReset">Start over</button>
+      </div>
+      <div class="stats">
+        <div class="stat"><span class="k">Price level</span><span class="v" id="adasP">No change</span></div>
+        <div class="stat"><span class="k">Real GDP</span><span class="v" id="adasY">No change</span></div>
+      </div>
+      <div class="stat" style="margin-bottom:8px"><span class="k">Compared with full employment</span><span class="v" id="adasGap">At full employment</span></div>
+      <div class="story" id="adasStory" aria-live="polite">The economy starts at full employment, where AD, SRAS, and LRAS all meet. Shift a curve to see what happens.</div>
+    </div>
+  </div>
+  <div class="check" data-quiz>
+    <p>Check yourself. Oil prices jump sharply. Which curve shifts, and which way?</p>
+    <div class="opts">
+      <button data-a="no" data-fb="Not quite. Oil is an input cost for firms, so it moves a supply curve, not AD.">AD shifts left</button>
+      <button data-a="no" data-fb="Not quite. Oil is an input cost for firms, so it moves a supply curve, not AD.">AD shifts right</button>
+      <button data-a="ok" data-fb="Yes. Higher input costs shift SRAS left. Click SRAS Left to see prices rise while real GDP falls. That is cost-push inflation.">SRAS shifts left</button>
+      <button data-a="no" data-fb="Close, it is SRAS, but higher costs make firms produce less at each price level. Which way is less?">SRAS shifts right</button>
+    </div>
+    <div class="fb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ============ TOOL 3, MONEY CREATION ============ -->
+<section class="tool" id="money">
+  <p class="chap">Chapter 15, Money creation</p>
+  <h2>How banks create money</h2>
+  <p class="how">Someone deposits new cash in Bank A. The bank keeps the required share as reserves and lends out the rest. The borrower spends the loan, and the seller deposits it in Bank B, which does the same thing. Each new loan is new money. Click <b>Next bank</b> to follow the chain.</p>
+  <div class="grid2">
+    <div>
+      <svg id="moneySvg" viewBox="0 0 520 300" role="img" aria-label="Bar chart of deposits at each bank"></svg>
+      <div class="legend"><span><span class="sw" style="background:var(--ghost)"></span>Kept as required reserves</span><span><span class="sw" style="background:var(--green)"></span>Lent out (new money)</span></div>
+      <div class="controls">
+        <button class="primary" id="monNext">Next bank</button>
+        <button id="monAll">Show all banks</button>
+        <button id="monReset">Start over</button>
+      </div>
+    </div>
+    <div>
+      <div class="slider"><label for="rr"><span>Reserve ratio</span><span id="rrVal">20%</span></label>
+        <input type="range" id="rr" min="5" max="50" step="5" value="20"></div>
+      <div class="slider"><label for="dep"><span>New deposit at Bank A</span><span id="depVal">$100</span></label>
+        <input type="range" id="dep" min="100" max="1000" step="100" value="100"></div>
+      <div class="stats">
+        <div class="stat"><span class="k">Monetary multiplier, 1 / R</span><span class="v" id="monM">5</span></div>
+        <div class="stat"><span class="k">Most new money the system can create</span><span class="v" id="monMax">$400</span></div>
+      </div>
+      <div class="small" id="monProgText">Banks have created $0 of new money so far.</div>
+      <div class="bar" aria-hidden="true"><div id="monBar" style="background:var(--green)"></div></div>
+      <div class="story" id="monStory" aria-live="polite">Click Next bank to see what Bank A does with its new deposit.</div>
+    </div>
+  </div>
+  <div class="tablebox"><table id="monTable" aria-label="Deposits, reserves, and loans at each bank">
+    <thead><tr><th>Bank</th><th>New deposit</th><th>Required reserves</th><th>Loan (new money)</th></tr></thead><tbody></tbody></table></div>
+  <div class="check" data-quiz>
+    <p>Check yourself. The reserve ratio is 25 percent. What is the monetary multiplier?</p>
+    <div class="opts">
+      <button data-a="no" data-fb="Not quite. The multiplier is 1 divided by the reserve ratio, written as a decimal.">0.25</button>
+      <button data-a="no" data-fb="Not quite. Write 25 percent as 0.25, then find 1 / 0.25.">2.5</button>
+      <button data-a="ok" data-fb="Yes. 1 / 0.25 = 4. Set the slider to 25% to see it.">4</button>
+      <button data-a="no" data-fb="Not quite. Write 25 percent as 0.25, not 25, then find 1 / 0.25.">25</button>
+    </div>
+    <div class="fb" aria-live="polite"></div>
+  </div>
+</section>
+
+<footer>
+  <p>The design of this page follows <a href="https://rabbanimaysam.github.io/micro-interactive/">Introductory Microeconomics Interactive Tools</a> by Maysam Rabbani, Department of Economics, Montclair State University, with his permission. Many thanks to him for the idea and his help.</p>
+  <p>Chapter numbers follow the McConnell, Brue, and Flynn macroeconomics text used in this course.</p>
+</footer>
+</div>
+
+<script>
+(function(){
+const NS="http://www.w3.org/2000/svg";
+function el(tag,attrs,parent,text){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(text!==undefined)e.textContent=text;if(parent)parent.appendChild(e);return e;}
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
+function money(x,unit){
+  const d = (Math.abs(x-Math.round(x))<0.005 || x>=1000) ? 0 : 2;
+  const s = x.toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
+  return "$"+s+(unit?" "+unit:"");
+}
+function $(id){return document.getElementById(id);}
+
+/* ---------- Check yourself questions ---------- */
+document.querySelectorAll("[data-quiz]").forEach(q=>{
+  const fb=q.querySelector(".fb");
+  q.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{
+    fb.innerHTML="";
+    const s=document.createElement("span");
+    s.className=b.dataset.a==="ok"?"ok":"no";
+    s.textContent=b.dataset.fb;
+    fb.appendChild(s);
+  }));
+});
+
+/* ---------- Tool 1, Multiplier ---------- */
+(function(){
+  const svg=$("multSvg"), W=520,H=300,L=50,R=10,T=16,B=40, pw=W-L-R, ph=H-T-B;
+  const MAXR=12; // rounds drawn individually, then "Rest"
+  let n=0;
+  function params(){return {mpc:+$("mpc").value, dI:+$("dI").value};}
+  function rounds(p){
+    const out=[]; let inc=p.dI;
+    for(let k=1;k<=MAXR;k++){out.push({lab:String(k),inc:inc,spent:inc*p.mpc,saved:inc*(1-p.mpc)}); inc*=p.mpc;}
+    const total=p.dI/(1-p.mpc), sofar=out.reduce((a,r)=>a+r.inc,0), rest=total-sofar;
+    out.push({lab:"Rest",inc:rest,spent:rest*p.mpc,saved:rest*(1-p.mpc)});
+    return out;
+  }
+  function draw(){
+    const p=params(), rs=rounds(p), total=p.dI/(1-p.mpc), m=1/(1-p.mpc);
+    $("mpcVal").textContent=p.mpc.toFixed(2);
+    $("dIVal").textContent=money(p.dI,"billion");
+    $("multM").textContent=(Math.round(m*100)/100).toString();
+    $("multTotal").textContent=money(total,"billion");
+    while(svg.firstChild)svg.removeChild(svg.firstChild);
+    const ymax=Math.max(p.dI,rs[MAXR].inc);
+    const bw=pw/(MAXR+1);
+    // axis
+    el("line",{x1:L,y1:T+ph,x2:W-R,y2:T+ph,stroke:css("--ink")},svg);
+    el("line",{x1:L,y1:T,x2:L,y2:T+ph,stroke:css("--ink")},svg);
+    el("text",{x:L-8,y:T+8,"text-anchor":"end",class:"tick"},svg,money(ymax,"B"));
+    el("text",{x:L-8,y:T+ph,"text-anchor":"end",class:"tick"},svg,"$0");
+    el("text",{x:L+pw/2,y:H-6,"text-anchor":"middle",class:"lbl"},svg,"Round of spending");
+    rs.forEach((r,i)=>{
+      const x=L+i*bw+bw*0.15, w=bw*0.7;
+      const hs=r.spent/ymax*ph, hv=r.saved/ymax*ph;
+      const shown=i<n;
+      const g=el("g",{opacity:shown?1:0.12},svg);
+      el("rect",{x:x,y:T+ph-hv-hs,width:w,height:hs,fill:css("--accent"),rx:2},g);
+      el("rect",{x:x,y:T+ph-hv,width:w,height:hv,fill:css("--ghost"),rx:2},g);
+      el("text",{x:x+w/2,y:T+ph+15,"text-anchor":"middle",class:"tick"},svg,r.lab);
+    });
+    // table
+    const tb=$("multTable").querySelector("tbody"); tb.innerHTML="";
+    let sofar=0;
+    rs.slice(0,n).forEach(r=>{sofar+=r.inc;
+      const tr=document.createElement("tr");
+      [r.lab==="Rest"?"All later rounds":r.lab,money(r.inc,"B"),money(r.spent,"B"),money(r.saved,"B")].forEach(t=>{const td=document.createElement("td");td.textContent=t;tr.appendChild(td);});
+      tb.appendChild(tr);});
+    $("multProgText").textContent="Real GDP has grown by "+money(sofar,"billion")+" so far, out of "+money(total,"billion")+".";
+    $("multBar").style.width=(sofar/total*100)+"%";
+    let s;
+    if(n===0) s="Click Next round to see who gets the first "+money(p.dI,"billion")+".";
+    else if(n===1) s="Round 1. Firms spend "+money(p.dI,"billion")+" on equipment, so workers and owners at the equipment makers earn "+money(p.dI,"billion")+" in new income. They spend "+money(rs[0].spent,"billion")+" and save "+money(rs[0].saved,"billion")+".";
+    else if(n<=MAXR) s="Round "+n+". The "+money(rs[n-2].spent,"billion")+" spent last round is new income now. Each round is smaller because people save part of every dollar.";
+    else s="After all rounds, real GDP rises by "+money(total,"billion")+", which is "+(Math.round(m*100)/100)+" times the first "+money(p.dI,"billion")+". A bigger MPC means more is passed on each round, so the multiplier is bigger.";
+    $("multStory").textContent=s;
+    $("multNext").disabled=n>MAXR;
+  }
+  $("multNext").onclick=()=>{if(n<=MAXR){n++;draw();}};
+  $("multAll").onclick=()=>{n=MAXR+1;draw();};
+  $("multReset").onclick=()=>{n=0;draw();};
+  $("mpc").oninput=draw; $("dI").oninput=draw;
+  draw();
+  window.addEventListener("themechange",draw);
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change",draw);
+})();
+
+/* ---------- Tool 2, AD/AS ---------- */
+(function(){
+  const svg=$("adasSvg"), W=520,H=400,L=46,R=16,T=16,B=60, pw=W-L-R, ph=H-T-B;
+  const X=y=>L+y/10*pw, Y=p=>T+ph-p/10*ph;
+  let a=0,s=0; // AD and SRAS shifts, in units of real GDP
+  const AD=(y,a)=>9-0.8*(y-a), AS=(y,s)=>1+0.8*(y-s);
+  const eq=(a,s)=>{const y=5+0.5*(a+s);return {y:y,p:AD(y,a)};};
+  function curve(fn,sh,color,dash,width,g){
+    el("line",{x1:X(-1),y1:Y(fn(-1,sh)),x2:X(11),y2:Y(fn(11,sh)),stroke:color,"stroke-width":width,"stroke-dasharray":dash||"none","clip-path":"url(#adasClip)"},g);
+  }
+  function labelAt(fn,sh,inv,targetP,text,color){
+    let y=sh+inv(targetP); if(y>9.6)y=9.6;
+    el("text",{x:X(y)+6,y:Y(fn(y,sh))+4,fill:color,"font-weight":"700","font-size":"14"},svg,text);
+  }
+  function draw(){
+    while(svg.firstChild)svg.removeChild(svg.firstChild);
+    const ink=css("--ink"), ghost=css("--ghost"), blue=css("--blue"), red=css("--accent"), green=css("--green");
+    const defs=el("defs",{},svg); const cp=el("clipPath",{id:"adasClip"},defs);
+    el("rect",{x:L,y:T,width:pw,height:ph},cp);
+    // axes
+    el("line",{x1:L,y1:T+ph,x2:L+pw,y2:T+ph,stroke:ink},svg);
+    el("line",{x1:L,y1:T,x2:L,y2:T+ph,stroke:ink},svg);
+    el("text",{x:L+pw/2,y:H-8,"text-anchor":"middle",class:"lbl"},svg,"Real GDP");
+    el("text",{x:14,y:T+ph/2,"text-anchor":"middle",class:"lbl",transform:"rotate(-90 14 "+(T+ph/2)+")"},svg,"Price level");
+    // LRAS
+    el("line",{x1:X(5),y1:T,x2:X(5),y2:T+ph,stroke:green,"stroke-width":2.5},svg);
+    el("text",{x:X(5)+6,y:T+14,fill:green,"font-weight":"700","font-size":"14"},svg,"LRAS");
+    el("text",{x:X(5),y:T+ph+16,"text-anchor":"middle",class:"tick"},svg,"Full employment");
+    const g=el("g",{},svg);
+    const moved=(a!==0||s!==0);
+    if(a!==0) curve(AD,0,ghost,"6 5",2,g);
+    if(s!==0) curve(AS,0,ghost,"6 5",2,g);
+    curve(AD,a,blue,null,3,g);
+    curve(AS,s,red,null,3,g);
+    labelAt(AD,a,P=>(9-P)/0.8,1.6,"AD",blue);
+    labelAt(AS,s,P=>(P-1)/0.8,8.6,"SRAS",red);
+    const e0=eq(0,0), e1=eq(a,s);
+    function dot(e,col,lp,ly,faded){
+      el("line",{x1:L,y1:Y(e.p),x2:X(e.y),y2:Y(e.p),stroke:col,"stroke-dasharray":"3 4",opacity:faded?0.7:1},svg);
+      el("line",{x1:X(e.y),y1:Y(e.p),x2:X(e.y),y2:T+ph,stroke:col,"stroke-dasharray":"3 4",opacity:faded?0.7:1},svg);
+      el("circle",{cx:X(e.y),cy:Y(e.p),r:6,fill:col,stroke:css("--card"),"stroke-width":2},svg);
+      el("text",{x:L-6,y:Y(e.p)+4,"text-anchor":"end",class:"tick"},svg,lp);
+      if(Math.abs(e.y-5)>0.3 || ly==="Y₁") el("text",{x:X(e.y),y:T+ph+31,"text-anchor":"middle",class:"tick"},svg,ly);
+    }
+    if(moved){dot(e0,ghost,"P₁","Y₁",true); dot(e1,ink,"P₂","Y₂",false);}
+    else dot(e0,ink,"P₁","Y₁",false);
+    // readouts
+    const dP=e1.p-e0.p, dY=e1.y-e0.y;
+    const word=(d)=>Math.abs(d)<1e-9?"No change":(d>0?"Rises ▲":"Falls ▼");
+    $("adasP").textContent=word(dP); $("adasY").textContent=word(dY);
+    $("adasGap").textContent=Math.abs(e1.y-5)<1e-9?"At full employment":(e1.y<5?"Recessionary gap":"Inflationary gap");
+    let st;
+    if(!moved) st="The economy starts at full employment, where AD, SRAS, and LRAS all meet. Shift a curve to see what happens.";
+    else if(s===0&&a>0) st="AD moved right. More spending pushes real GDP past full employment and pulls the price level up. Economists call this demand-pull inflation. Ask yourself what could cause it, such as higher consumer confidence or a tax cut.";
+    else if(s===0&&a<0) st="AD moved left. Less spending drops real GDP below full employment, so unemployment rises. This is a recession with a recessionary gap. Notice that prices fall here, but in the real world prices are often sticky downward, so output takes more of the hit.";
+    else if(a===0&&s<0) st="SRAS moved left. Higher input costs, like oil or wages, raise the price level and lower real GDP at the same time. This is cost-push inflation, sometimes called stagflation.";
+    else if(a===0&&s>0) st="SRAS moved right. Lower input costs or better productivity raise real GDP and lower the price level. This is good news on both fronts.";
+    else st="Both curves moved. To see what happens, compare the size of the shifts. When both curves move, one of the two results (price level or real GDP) depends on which shift is bigger.";
+    $("adasStory").textContent=st;
+    $("adL").disabled=a<=-3; $("adR").disabled=a>=3; $("asL").disabled=s<=-3; $("asR").disabled=s>=3;
+  }
+  $("adL").onclick=()=>{a--;draw();}; $("adR").onclick=()=>{a++;draw();};
+  $("asL").onclick=()=>{s--;draw();}; $("asR").onclick=()=>{s++;draw();};
+  $("adasReset").onclick=()=>{a=0;s=0;draw();};
+  draw();
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change",draw);
+})();
+
+/* ---------- Tool 3, Money creation ---------- */
+(function(){
+  const svg=$("moneySvg"), W=520,H=300,L=50,R=10,T=16,B=40, pw=W-L-R, ph=H-T-B;
+  const NB=10, names="ABCDEFGHIJ";
+  let n=0;
+  function params(){return {r:+$("rr").value/100, D:+$("dep").value};}
+  function banks(p){
+    const out=[]; let d=p.D;
+    for(let k=0;k<NB;k++){out.push({lab:names[k],dep:d,res:d*p.r,loan:d*(1-p.r)}); d*=(1-p.r);}
+    const maxLoans=p.D*(1-p.r)/p.r, sofar=out.reduce((a,b)=>a+b.loan,0), restLoan=maxLoans-sofar;
+    const restDep=restLoan/(1-p.r);
+    out.push({lab:"Rest",dep:restDep,res:restDep*p.r,loan:restLoan});
+    return out;
+  }
+  function draw(){
+    const p=params(), bs=banks(p), maxL=p.D*(1-p.r)/p.r;
+    $("rrVal").textContent=Math.round(p.r*100)+"%";
+    $("depVal").textContent=money(p.D);
+    $("monM").textContent=(Math.round(100/p.r)/100).toString();
+    $("monMax").textContent=money(maxL);
+    while(svg.firstChild)svg.removeChild(svg.firstChild);
+    const ymax=Math.max(p.D,bs[NB].dep), bw=pw/(NB+1);
+    el("line",{x1:L,y1:T+ph,x2:W-R,y2:T+ph,stroke:css("--ink")},svg);
+    el("line",{x1:L,y1:T,x2:L,y2:T+ph,stroke:css("--ink")},svg);
+    el("text",{x:L-8,y:T+8,"text-anchor":"end",class:"tick"},svg,money(ymax));
+    el("text",{x:L-8,y:T+ph,"text-anchor":"end",class:"tick"},svg,"$0");
+    el("text",{x:L+pw/2,y:H-6,"text-anchor":"middle",class:"lbl"},svg,"Bank");
+    bs.forEach((b,i)=>{
+      const x=L+i*bw+bw*0.15, w=bw*0.7, hr=b.res/ymax*ph, hl=b.loan/ymax*ph;
+      const g=el("g",{opacity:i<n?1:0.12},svg);
+      el("rect",{x:x,y:T+ph-hr,width:w,height:hr,fill:css("--ghost"),rx:2},g);
+      el("rect",{x:x,y:T+ph-hr-hl,width:w,height:hl,fill:css("--green"),rx:2},g);
+      el("text",{x:x+w/2,y:T+ph+15,"text-anchor":"middle",class:"tick"},svg,b.lab);
+    });
+    const tb=$("monTable").querySelector("tbody"); tb.innerHTML="";
+    let sofar=0;
+    bs.slice(0,n).forEach(b=>{sofar+=b.loan;
+      const tr=document.createElement("tr");
+      [b.lab==="Rest"?"All other banks":"Bank "+b.lab,money(b.dep),money(b.res),money(b.loan)].forEach(t=>{const td=document.createElement("td");td.textContent=t;tr.appendChild(td);});
+      tb.appendChild(tr);});
+    $("monProgText").textContent="Banks have created "+money(sofar)+" of new money so far, out of "+money(maxL)+".";
+    $("monBar").style.width=(sofar/maxL*100)+"%";
+    let s;
+    const pct=Math.round(p.r*100)+" percent";
+    if(n===0) s="Click Next bank to see what Bank A does with its new "+money(p.D)+" deposit.";
+    else if(n===1) s="Bank A gets "+money(p.D)+". It must keep "+pct+", or "+money(bs[0].res)+", as reserves. It lends the other "+money(bs[0].loan)+". That loan is brand new money.";
+    else if(n<=NB) s="The "+money(bs[n-2].loan)+" loan from Bank "+names[n-2]+" gets spent and deposited in Bank "+names[n-1]+". Bank "+names[n-1]+" keeps "+money(bs[n-1].res)+" and lends "+money(bs[n-1].loan)+".";
+    else s="Across all banks, lending creates "+money(maxL)+" of new money. That is Bank A's excess reserves ("+money(bs[0].loan)+") times the monetary multiplier ("+(Math.round(100/p.r)/100)+"). Raise the reserve ratio and watch the multiplier shrink.";
+    $("monStory").textContent=s;
+    $("monNext").disabled=n>NB;
+  }
+  $("monNext").onclick=()=>{if(n<=NB){n++;draw();}};
+  $("monAll").onclick=()=>{n=NB+1;draw();};
+  $("monReset").onclick=()=>{n=0;draw();};
+  $("rr").oninput=draw; $("dep").oninput=draw;
+  draw();
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change",draw);
+})();
+})();
+</script>
+</body>
+</html>
