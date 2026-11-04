@@ -9,19 +9,19 @@
 :root{
   --bg:#f7f6f3; --card:#ffffff; --ink:#1d1d1f; --muted:#5d5d63; --line:#d9d7d1;
   --accent:#c8102e; --accent-soft:#f6dde1; --blue:#1f5fa8; --blue-soft:#dce8f6;
-  --green:#2e7d4f; --ghost:#a5a39d; --grid:#ecebe7; --btn:#f0efeb; --btn-hover:#e4e2dc;
+  --green:#2e7d4f; --amber:#b7791f; --amber-soft:#f7ecd3; --ghost:#a5a39d; --grid:#ecebe7; --btn:#f0efeb; --btn-hover:#e4e2dc;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --bg:#16161a; --card:#212126; --ink:#ececf0; --muted:#a4a4ad; --line:#3a3a42;
     --accent:#ff5a6e; --accent-soft:#4a2229; --blue:#6aa8f0; --blue-soft:#1f3350;
-    --green:#5cc489; --ghost:#6c6c75; --grid:#2c2c33; --btn:#2c2c33; --btn-hover:#3a3a42;
+    --green:#5cc489; --amber:#e0b050; --amber-soft:#4a3b1c; --ghost:#6c6c75; --grid:#2c2c33; --btn:#2c2c33; --btn-hover:#3a3a42;
   }
 }
 :root[data-theme="dark"]{
   --bg:#16161a; --card:#212126; --ink:#ececf0; --muted:#a4a4ad; --line:#3a3a42;
   --accent:#ff5a6e; --accent-soft:#4a2229; --blue:#6aa8f0; --blue-soft:#1f3350;
-  --green:#5cc489; --ghost:#6c6c75; --grid:#2c2c33; --btn:#2c2c33; --btn-hover:#3a3a42;
+  --green:#5cc489; --amber:#e0b050; --amber-soft:#4a3b1c; --ghost:#6c6c75; --grid:#2c2c33; --btn:#2c2c33; --btn-hover:#3a3a42;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
@@ -74,6 +74,16 @@ th{color:var(--muted);font-weight:600}
 .tick{font-size:12px;fill:var(--muted)}
 footer{color:var(--muted);font-size:.9rem;border-top:1px solid var(--line);padding-top:16px;margin-top:32px}
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.85rem;color:var(--muted);margin-top:4px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:start}
+@media (max-width:720px){.grid3{grid-template-columns:minmax(0,1fr)}}
+.grid2even{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
+@media (max-width:560px){.grid2even{grid-template-columns:minmax(0,1fr)}}
+.panel-title{font-size:.85rem;font-weight:600;color:var(--muted);text-align:center;margin:4px 0 0}
+button.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.stats3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.stats4{grid-template-columns:repeat(4,1fr)}
+@media (max-width:560px){.stats3,.stats4{grid-template-columns:1fr 1fr}}
+.answer{display:none;background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:8px 12px;margin-top:8px;font-size:.95rem}
 .sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:4px}
 </style>
 </head>
@@ -90,7 +100,10 @@ footer{color:var(--muted);font-size:.9rem;border-top:1px solid var(--line);paddi
   <ul>
     <li>Chapter 11, Aggregate expenditures. <a href="#multiplier">The spending multiplier, round by round</a></li>
     <li>Chapter 12, Aggregate demand and aggregate supply. <a href="#adas">Shifts in AD and AS</a></li>
-    <li>Chapter 14, Money, the Federal Reserve, and interest rates. <a href="#money">How banks create money</a></li>
+    <li>Chapter 13, Fiscal policy, deficits, and debt. <a href="#fiscal">Close the gap with fiscal policy</a> and <a href="#stabilizers">Built-in stability</a></li>
+    <li>Chapter 14, Money, the Federal Reserve, and interest rates. <a href="#money">How banks create money</a> and <a href="#moneymarket">The money market and bond prices</a></li>
+    <li>Chapter 15, Monetary policy, GDP, and the price level. <a href="#omo">Open-market operations</a> and <a href="#chain">From the Fed to real GDP</a></li>
+    <li>Chapter 19, International trade. <a href="#compadv">Comparative advantage and the gains from trade</a> and <a href="#tariff">Tariffs, who wins and who loses</a></li>
   </ul>
 </nav>
 
@@ -172,11 +185,89 @@ footer{color:var(--muted);font-size:.9rem;border-top:1px solid var(--line);paddi
   </div>
 </section>
 
+<!-- ============ CH 13, CLOSE THE GAP ============ -->
+<section class="tool" id="fiscal">
+  <p class="chap">Chapter 13, Fiscal policy, deficits, and debt</p>
+  <h2>Close the gap with fiscal policy</h2>
+  <p class="how">Pick a starting point. In a recession, real GDP sits below full employment. With demand-pull inflation, it sits above. Then change government spending (G) or taxes and watch AD shift. Every dollar of new spending moves AD by the multiplier, so a small policy change goes a long way. Prices are sticky downward here, as in the textbook, so cutting AD lowers output but not the price level.</p>
+  <div class="controls" style="margin-top:0">
+    <div class="group"><span class="lab">Start in</span><button id="fsRec" class="on">Recession</button><button id="fsInf">Inflation</button></div>
+    <button id="fsReset">Start over</button>
+  </div>
+  <div class="grid2">
+    <div>
+      <svg id="fsSvg" viewBox="0 0 520 380" role="img" aria-label="AD and AS graph showing fiscal policy"></svg>
+    </div>
+    <div>
+      <div class="slider"><label for="fsMpc"><span>MPC</span><span id="fsMpcVal">0.75</span></label>
+        <input type="range" id="fsMpc" min="0.5" max="0.9" step="0.05" value="0.75"></div>
+      <div class="slider"><label for="fsG"><span>Change in government spending</span><span id="fsGVal">$0 billion</span></label>
+        <input type="range" id="fsG" min="-10" max="10" step="0.5" value="0"></div>
+      <div class="slider"><label for="fsT"><span>Change in taxes</span><span id="fsTVal">$0 billion</span></label>
+        <input type="range" id="fsT" min="-10" max="10" step="0.5" value="0"></div>
+      <div class="stats">
+        <div class="stat"><span class="k">AD shifts by</span><span class="v" id="fsShift">$0 billion</span></div>
+        <div class="stat"><span class="k">Real GDP now</span><span class="v" id="fsY">$490 billion</span></div>
+        <div class="stat"><span class="k">Gap left to close</span><span class="v" id="fsGap">$20 billion</span></div>
+        <div class="stat"><span class="k">Effect on the budget</span><span class="v" id="fsBudget">No change</span></div>
+      </div>
+      <div class="story" id="fsStory" aria-live="polite"></div>
+      <button id="fsAnsBtn">Show the answer</button>
+      <div class="answer" id="fsAns"></div>
+    </div>
+  </div>
+  <div class="check" data-quiz>
+    <p>Check yourself. The MPC is 0.75, and there is a $40 billion recessionary gap. How much new government spending closes it?</p>
+    <div class="opts">
+      <button data-a="ok" data-fb="Yes. The multiplier is 1 / (1 − 0.75) = 4, and $10 billion × 4 = $40 billion.">$10 billion</button>
+      <button data-a="no" data-fb="Not quite. That would be 0.75 × $40 billion. Divide the gap by the multiplier instead.">$30 billion</button>
+      <button data-a="no" data-fb="Not quite. Thanks to the multiplier, G does not need to rise by the whole gap.">$40 billion</button>
+      <button data-a="no" data-fb="Not quite. That multiplies the gap by 4. Divide it by the multiplier instead.">$160 billion</button>
+    </div>
+    <div class="fb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ============ CH 13, BUILT-IN STABILITY ============ -->
+<section class="tool" id="stabilizers">
+  <p class="chap">Chapter 13, Fiscal policy, deficits, and debt</p>
+  <h2>Built-in stability</h2>
+  <p class="how">Government spending (G) stays put as GDP changes, but tax revenue (T) rises and falls with GDP. Move the GDP slider into a recession or a boom, and watch the budget swing between a deficit and a surplus with no new law at all. Then switch the tax system to see which one gives the most stability.</p>
+  <div class="grid2">
+    <div>
+      <svg id="stSvg" viewBox="0 0 520 360" role="img" aria-label="Tax revenue and government spending versus GDP"></svg>
+      <div class="legend"><span><span class="sw" style="background:var(--amber-soft);border:1px solid var(--amber)"></span>Deficit</span><span><span class="sw" style="background:var(--blue-soft);border:1px solid var(--blue)"></span>Surplus</span></div>
+    </div>
+    <div>
+      <div class="slider"><label for="stY"><span>Real GDP</span><span id="stYVal">$500 billion</span></label>
+        <input type="range" id="stY" min="400" max="600" step="10" value="500"></div>
+      <div class="controls">
+        <div class="group"><span class="lab">Tax system</span><button id="stProg" class="on">Progressive</button><button id="stProp">Proportional</button><button id="stReg">Regressive</button></div>
+      </div>
+      <div class="stats">
+        <div class="stat"><span class="k">Tax revenue</span><span class="v" id="stT">$500 billion</span></div>
+        <div class="stat"><span class="k">Budget</span><span class="v" id="stB">Balanced</span></div>
+      </div>
+      <div class="story" id="stStory" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="check" data-quiz>
+    <p>Check yourself. A recession starts, and Congress passes no new laws. What happens to the federal budget?</p>
+    <div class="opts">
+      <button data-a="ok" data-fb="Yes. Incomes fall, so tax revenue falls automatically, and the budget moves toward a deficit.">It moves toward a deficit</button>
+      <button data-a="no" data-fb="Not quite. Tax revenue falls when incomes fall. Slide GDP left to see it.">It moves toward a surplus</button>
+      <button data-a="no" data-fb="Not quite. Tax revenue changes with GDP even without new laws.">It stays balanced</button>
+      <button data-a="no" data-fb="Not quite. Built-in stabilizers work automatically, without a vote.">Nothing changes until Congress votes</button>
+    </div>
+    <div class="fb" aria-live="polite"></div>
+  </div>
+</section>
+
 <!-- ============ TOOL 3, MONEY CREATION ============ -->
 <section class="tool" id="money">
   <p class="chap">Chapter 14, Money, the Federal Reserve, and interest rates</p>
   <h2>How banks create money</h2>
-  <p class="how">Someone deposits new cash in Bank A. The bank keeps the required share as reserves and lends out the rest. The borrower spends the loan, and the seller deposits it in Bank B, which does the same thing. Each new loan is new money. Click <b>Next bank</b> to follow the chain.</p>
+  <p class="how">Someone deposits new cash in Bank A. The bank keeps the required share as reserves and lends out the rest. The borrower spends the loan, and the seller deposits it in Bank B, which does the same thing. The cash deposit itself does not change the money supply, because cash just became a checking deposit. The loans are the new money. Click <b>Next bank</b> to follow the chain.</p>
   <div class="grid2">
     <div>
       <svg id="moneySvg" viewBox="0 0 520 300" role="img" aria-label="Bar chart of deposits at each bank"></svg>
@@ -188,13 +279,13 @@ footer{color:var(--muted);font-size:.9rem;border-top:1px solid var(--line);paddi
       </div>
     </div>
     <div>
-      <div class="slider"><label for="rr"><span>Reserve ratio</span><span id="rrVal">20%</span></label>
-        <input type="range" id="rr" min="5" max="50" step="5" value="20"></div>
-      <div class="slider"><label for="dep"><span>New deposit at Bank A</span><span id="depVal">$100</span></label>
-        <input type="range" id="dep" min="100" max="1000" step="100" value="100"></div>
+      <div class="slider"><label for="rr"><span>Reserve ratio</span><span id="rrVal">10%</span></label>
+        <input type="range" id="rr" min="5" max="50" step="5" value="10"></div>
+      <div class="slider"><label for="dep"><span>New deposit at Bank A</span><span id="depVal">$1,000</span></label>
+        <input type="range" id="dep" min="100" max="2000" step="100" value="1000"></div>
       <div class="stats">
-        <div class="stat"><span class="k">Monetary multiplier, 1 / R</span><span class="v" id="monM">5</span></div>
-        <div class="stat"><span class="k">Most new money the system can create</span><span class="v" id="monMax">$400</span></div>
+        <div class="stat"><span class="k">Monetary multiplier, 1 / R</span><span class="v" id="monM">10</span></div>
+        <div class="stat"><span class="k">Most new money the system can create</span><span class="v" id="monMax">$9,000</span></div>
       </div>
       <div class="small" id="monProgText">Banks have created $0 of new money so far.</div>
       <div class="bar" aria-hidden="true"><div id="monBar" style="background:var(--green)"></div></div>
@@ -210,6 +301,183 @@ footer{color:var(--muted);font-size:.9rem;border-top:1px solid var(--line);paddi
       <button data-a="no" data-fb="Not quite. Write 25 percent as 0.25, then find 1 / 0.25.">2.5</button>
       <button data-a="ok" data-fb="Yes. 1 / 0.25 = 4. Set the slider to 25% to see it.">4</button>
       <button data-a="no" data-fb="Not quite. Write 25 percent as 0.25, not 25, then find 1 / 0.25.">25</button>
+    </div>
+    <div class="fb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ============ CH 14, MONEY MARKET ============ -->
+<section class="tool" id="moneymarket">
+  <p class="chap">Chapter 14, Money, the Federal Reserve, and interest rates</p>
+  <h2>The money market and bond prices</h2>
+  <p class="how">The total demand for money (Dm) adds two parts. The transactions demand (Dt) depends on nominal GDP. The asset demand (Da) falls as the interest rate rises, because holding cash means giving up interest. The Fed sets the money supply (Sm). Shift either side and watch the interest rate and the price of a bond that pays a fixed $50 a year.</p>
+  <div class="grid2">
+    <div>
+      <svg id="mmSvg" viewBox="0 0 520 380" role="img" aria-label="Money market graph"></svg>
+    </div>
+    <div>
+      <div class="controls" style="margin-top:0">
+        <div class="group"><span class="lab">Money supply</span><button id="mmSL" aria-label="Decrease money supply">◀ Less</button><button id="mmSR" aria-label="Increase money supply">More ▶</button></div>
+        <div class="group"><span class="lab">Nominal GDP</span><button id="mmGL" aria-label="Lower nominal GDP">◀ Lower</button><button id="mmGR" aria-label="Higher nominal GDP">Higher ▶</button></div>
+        <button id="mmParts">Show Dt and Da</button>
+        <button id="mmReset">Start over</button>
+      </div>
+      <div class="stats">
+        <div class="stat"><span class="k">Interest rate</span><span class="v" id="mmI">6%</span></div>
+        <div class="stat"><span class="k">Price of a $50 a year bond</span><span class="v" id="mmB">$833</span></div>
+      </div>
+      <div class="story" id="mmStory" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="check" data-quiz>
+    <p>Check yourself. Interest rates rise. What happens to the price of a bond you already own?</p>
+    <div class="opts">
+      <button data-a="ok" data-fb="Yes. New bonds pay more, so buyers will only pay less for your old $50 bond. Bond prices and interest rates move in opposite directions.">It falls</button>
+      <button data-a="no" data-fb="Not quite. Your bond still pays only $50, while new bonds pay more. Would buyers pay more or less for yours?">It rises</button>
+      <button data-a="no" data-fb="Not quite. The payment stays the same, but the price buyers will pay changes.">It stays the same</button>
+      <button data-a="no" data-fb="Not quite. Bond prices and interest rates always move in opposite directions.">It depends on the money supply</button>
+    </div>
+    <div class="fb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ============ CH 15, OPEN-MARKET OPERATIONS ============ -->
+<section class="tool" id="omo">
+  <p class="chap">Chapter 15, Monetary policy, GDP, and the price level</p>
+  <h2>Open-market operations</h2>
+  <p class="how">The Fed buys or sells government bonds to move the money supply and interest rates. Each click is a $10 billion trade. Follow the money and the bonds in the picture, then see what happens in the bond market.</p>
+  <div class="grid2">
+    <div>
+      <svg id="omoFlow" viewBox="0 0 520 150" role="img" aria-label="Who gets the bonds and who gets the money"></svg>
+      <svg id="omoSvg" viewBox="0 0 520 320" role="img" aria-label="Bond market graph"></svg>
+    </div>
+    <div>
+      <div class="controls" style="margin-top:0">
+        <button class="primary" id="omoBuy">Fed buys bonds</button>
+        <button class="primary" id="omoSell">Fed sells bonds</button>
+        <button id="omoReset">Start over</button>
+      </div>
+      <div class="stats">
+        <div class="stat"><span class="k">Change in money supply</span><span class="v" id="omoM">$0 billion</span></div>
+        <div class="stat"><span class="k">Bond price</span><span class="v" id="omoP">$1,000</span></div>
+        <div class="stat"><span class="k">Interest rate</span><span class="v" id="omoI">5.00%</span></div>
+        <div class="stat"><span class="k">Policy</span><span class="v" id="omoPol">Neutral</span></div>
+      </div>
+      <div class="story" id="omoStory" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="check" data-quiz>
+    <p>Check yourself. The Fed wants to fight inflation. What should it do in the bond market?</p>
+    <div class="opts">
+      <button data-a="ok" data-fb="Yes. Selling bonds pulls money out of the economy, pushes bond prices down, and raises interest rates.">Sell bonds</button>
+      <button data-a="no" data-fb="Not quite. Buying bonds adds money and lowers interest rates. That fights a recession.">Buy bonds</button>
+      <button data-a="no" data-fb="Not quite. Open-market operations are the Fed's main tool, so it should act.">Do nothing in the bond market</button>
+      <button data-a="no" data-fb="Not quite. Adding money would push prices up even more.">Print more money to buy goods</button>
+    </div>
+    <div class="fb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ============ CH 15, CHAIN ============ -->
+<section class="tool" id="chain">
+  <p class="chap">Chapter 15, Monetary policy, GDP, and the price level</p>
+  <h2>From the Fed to real GDP</h2>
+  <p class="how">Monetary policy works through a chain. The money supply sets the interest rate. The interest rate sets investment spending. Investment shifts AD, which sets real GDP and the price level. Click a policy and watch it move through all three graphs. The numbers follow the textbook example, where the multiplier is 4.</p>
+  <div class="controls" style="margin-top:0">
+    <button class="primary" id="chExp">Expansionary (raise Sm)</button>
+    <button class="primary" id="chRes">Restrictive (lower Sm)</button>
+    <button id="chReset">Start over</button>
+  </div>
+  <div class="grid3">
+    <div><svg id="chA" viewBox="0 0 300 260" role="img" aria-label="Market for money"></svg><p class="panel-title">(a) The market for money</p></div>
+    <div><svg id="chB" viewBox="0 0 300 260" role="img" aria-label="Investment demand"></svg><p class="panel-title">(b) Investment demand</p></div>
+    <div><svg id="chC" viewBox="0 0 300 260" role="img" aria-label="AD and AS"></svg><p class="panel-title">(c) Real GDP and the price level</p></div>
+  </div>
+  <div class="stats3 stats4">
+    <div class="stat"><span class="k">Interest rate</span><span class="v" id="chI">10%</span></div>
+    <div class="stat"><span class="k">Investment</span><span class="v" id="chInv">$15 billion</span></div>
+    <div class="stat"><span class="k">Real GDP</span><span class="v" id="chY">$880 billion</span></div>
+    <div class="stat"><span class="k">Price level</span><span class="v" id="chP">P₂</span></div>
+  </div>
+  <div class="story" id="chStory" aria-live="polite"></div>
+  <div class="check" data-quiz>
+    <p>Check yourself. The Fed lowers the money supply. Which chain is right?</p>
+    <div class="opts">
+      <button data-a="ok" data-fb="Yes. Less money raises the interest rate, which cuts investment, so AD shifts left.">Rates rise, investment falls, AD shifts left</button>
+      <button data-a="no" data-fb="Not quite. That is what happens when the Fed raises the money supply.">Rates fall, investment rises, AD shifts right</button>
+      <button data-a="no" data-fb="Not quite. Higher interest rates make borrowing to invest more costly, not less.">Rates rise, investment rises, AD shifts right</button>
+      <button data-a="no" data-fb="Not quite. The Fed acts on its own, without Congress.">Nothing happens until Congress acts</button>
+    </div>
+    <div class="fb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ============ CH 19, COMPARATIVE ADVANTAGE ============ -->
+<section class="tool" id="compadv">
+  <p class="chap">Chapter 19, International trade</p>
+  <h2>Comparative advantage and the gains from trade</h2>
+  <p class="how">The United States and Mexico can each produce beef and vegetables. Each gray triangle shows what a country can make on its own. Click <b>Specialize and trade</b> to have each country make only the good it gives up less to produce, then trade 10 tons of beef for vegetables. Move the terms of trade slider to see how the gains get split.</p>
+  <div class="controls" style="margin-top:0">
+    <button class="primary" id="caTrade">Specialize and trade</button>
+  </div>
+  <div class="grid2even">
+    <div><svg id="caUS" viewBox="0 0 300 300" role="img" aria-label="United States production possibilities"></svg><p class="panel-title">United States</p></div>
+    <div><svg id="caMX" viewBox="0 0 300 300" role="img" aria-label="Mexico production possibilities"></svg><p class="panel-title">Mexico</p></div>
+  </div>
+  <div class="slider"><label for="caT"><span>Terms of trade, tons of vegetables for 1 ton of beef</span><span id="caTVal">1.5</span></label>
+    <input type="range" id="caT" min="0.8" max="2.2" step="0.1" value="1.5"></div>
+  <div class="tablebox"><table id="caTable" aria-label="Output before and after trade">
+    <thead><tr><th>Country</th><th>Before trade</th><th>After trade</th><th>Gain</th></tr></thead><tbody></tbody></table></div>
+  <div class="story" id="caStory" aria-live="polite"></div>
+  <div class="check" data-quiz>
+    <p>Check yourself. Country A gives up 3 shirts to make a laptop. Country B gives up 6. Which terms of trade help both countries?</p>
+    <div class="opts">
+      <button data-a="no" data-fb="Not quite. Country A can already get a laptop for 3 shirts at home, so it would not sell one for only 2.">1 laptop for 2 shirts</button>
+      <button data-a="ok" data-fb="Yes. 4 shirts sits between the two opportunity costs of 3 and 6, so both countries gain.">1 laptop for 4 shirts</button>
+      <button data-a="no" data-fb="Not quite. Country B can make a laptop for 6 shirts at home, so it would not pay 7.">1 laptop for 7 shirts</button>
+      <button data-a="no" data-fb="Not quite. Their opportunity costs differ, so there is room for a deal that helps both.">None, they should not trade</button>
+    </div>
+    <div class="fb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ============ CH 19, TARIFF ============ -->
+<section class="tool" id="tariff">
+  <p class="chap">Chapter 19, International trade</p>
+  <h2>Tariffs, who wins and who loses</h2>
+  <p class="how">With free trade, U.S. buyers pay the world price for sneakers. A tariff is a tax on imports, so it raises the price buyers pay. Use the slider to add a tariff and watch domestic buyers, domestic producers, imports, and government revenue change.</p>
+  <div class="grid2">
+    <div>
+      <svg id="tfSvg" viewBox="0 0 520 380" role="img" aria-label="Domestic sneaker market with a tariff"></svg>
+      <div class="legend"><span><span class="sw" style="background:var(--blue-soft);border:1px solid var(--blue)"></span>Tariff revenue</span><span><span class="sw" style="background:var(--amber-soft);border:1px solid var(--amber)"></span>Loss nobody gets back</span></div>
+    </div>
+    <div>
+      <div class="slider"><label for="tfT"><span>Tariff per pair</span><span id="tfTVal">$0</span></label>
+        <input type="range" id="tfT" min="0" max="20" step="2.5" value="0"></div>
+      <div class="stats">
+        <div class="stat"><span class="k">Price buyers pay</span><span class="v" id="tfP">$20</span></div>
+        <div class="stat"><span class="k">Made in the U.S.</span><span class="v" id="tfQs">20 million</span></div>
+        <div class="stat"><span class="k">Bought in the U.S.</span><span class="v" id="tfQd">80 million</span></div>
+        <div class="stat"><span class="k">Imports</span><span class="v" id="tfM">60 million</span></div>
+      </div>
+      <table aria-label="Gains and losses from the tariff">
+        <tbody>
+          <tr><td>Consumers lose</td><td id="tfCL">$0 million</td></tr>
+          <tr><td>U.S. producers gain</td><td id="tfPG">$0 million</td></tr>
+          <tr><td>Government collects</td><td id="tfR">$0 million</td></tr>
+          <tr><td><b>Net loss to the country</b></td><td id="tfNL"><b>$0 million</b></td></tr>
+        </tbody>
+      </table>
+      <div class="story" id="tfStory" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="check" data-quiz>
+    <p>Check yourself. The U.S. adds a tariff on imported steel. Who is helped?</p>
+    <div class="opts">
+      <button data-a="ok" data-fb="Yes. U.S. steel makers can charge more and sell more, since imports now cost more.">U.S. steel producers</button>
+      <button data-a="no" data-fb="Not quite. Carmakers buy steel, so they now pay a higher price.">U.S. carmakers that buy steel</button>
+      <button data-a="no" data-fb="Not quite. Consumers pay higher prices for steel and for things made with it.">U.S. consumers</button>
+      <button data-a="no" data-fb="Not quite. Foreign producers sell less in the U.S. after the tariff.">Foreign steel producers</button>
     </div>
     <div class="fb" aria-live="polite"></div>
   </div>
@@ -232,6 +500,33 @@ function money(x,unit){
   return "$"+s+(unit?" "+unit:"");
 }
 function $(id){return document.getElementById(id);}
+let clipN=0;
+function plot(svg,o){
+  const pw=o.W-o.L-o.R, ph=o.H-o.T-o.B, id="clip"+(++clipN);
+  const X=x=>o.L+(x-o.x0)/(o.x1-o.x0)*pw, Y=y=>o.T+ph-(y-o.y0)/(o.y1-o.y0)*ph;
+  const cl={"clip-path":"url(#"+id+")"};
+  const P={X,Y,pw,ph,
+    clear(){while(svg.firstChild)svg.removeChild(svg.firstChild);const d=el("defs",{},svg);const cp=el("clipPath",{id:id},d);el("rect",{x:o.L,y:o.T,width:pw,height:ph},cp);},
+    axes(xl,yl){const ink=css("--ink");
+      el("line",{x1:o.L,y1:o.T+ph,x2:o.L+pw,y2:o.T+ph,stroke:ink},svg);
+      el("line",{x1:o.L,y1:o.T,x2:o.L,y2:o.T+ph,stroke:ink},svg);
+      el("text",{x:o.L+pw/2,y:o.H-6,"text-anchor":"middle",class:"lbl"},svg,xl);
+      el("text",{x:13,y:o.T+ph/2,"text-anchor":"middle",class:"lbl",transform:"rotate(-90 13 "+(o.T+ph/2)+")"},svg,yl);},
+    seg(x1,y1,x2,y2,a){return el("line",Object.assign({x1:X(x1),y1:Y(y1),x2:X(x2),y2:Y(y2)},cl,a),svg);},
+    path(pts,a){return el("path",Object.assign({d:"M"+pts.map(p=>X(p[0]).toFixed(1)+","+Y(p[1]).toFixed(1)).join("L"),fill:"none"},cl,a),svg);},
+    poly(pts,a){return el("path",Object.assign({d:"M"+pts.map(p=>X(p[0]).toFixed(1)+","+Y(p[1]).toFixed(1)).join("L")+"Z"},cl,a),svg);},
+    fn(f,a,b,attrs,n){const pts=[];n=n||80;for(let i=0;i<=n;i++){const x=a+(b-a)*i/n;pts.push([x,f(x)]);}return P.path(pts,attrs);},
+    text(x,y,t,a){return el("text",Object.assign({x:X(x),y:Y(y)},a),svg,t);},
+    xtick(x,t,dy){el("text",{x:X(x),y:o.T+ph+(dy||16),"text-anchor":"middle",class:"tick"},svg,t);},
+    ytick(y,t){el("text",{x:o.L-6,y:Y(y)+4,"text-anchor":"end",class:"tick"},svg,t);},
+    dot(x,y,col,faded){el("circle",{cx:X(x),cy:Y(y),r:6,fill:col,stroke:css("--card"),"stroke-width":2,opacity:faded?0.75:1},svg);},
+    drop(x,y,col){el("line",{x1:o.L,y1:Y(y),x2:X(x),y2:Y(y),stroke:col,"stroke-dasharray":"3 4"},svg);el("line",{x1:X(x),y1:Y(y),x2:X(x),y2:o.T+ph,stroke:col,"stroke-dasharray":"3 4"},svg);}
+  };
+  return P;
+}
+function onTheme(f){try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",f);}catch(e){}}
+function setOn(ids,on){ids.forEach(i=>$(i).classList.toggle("on",i===on));}
+window.MI={el,css,money,$,plot,onTheme,setOn};
 
 /* ---------- Check yourself questions ---------- */
 document.querySelectorAll("[data-quiz]").forEach(q=>{
@@ -434,6 +729,336 @@ document.querySelectorAll("[data-quiz]").forEach(q=>{
   draw();
   matchMedia("(prefers-color-scheme: dark)").addEventListener("change",draw);
 })();
+})();
+</script>
+
+<script>
+/* ================= Chapters 13, 14, 15, 19 ================= */
+(function(){
+const {el,css,money,$,plot,onTheme,setOn}=MI;
+const r2=x=>(Math.round(x*100)/100).toString();
+const B=x=>(x<-1e-9?"−":"")+money(Math.abs(Math.round(x*100)/100),"billion");
+const lab=(P,x,y,t,col,anchor)=>P.text(x,y,t,{fill:col,"font-weight":"700","font-size":"14","text-anchor":anchor||"start"});
+
+/* ---------- Ch 13, close the gap ---------- */
+(function(){
+  const svg=$("fsSvg"), P=plot(svg,{W:520,H:380,L:46,R:16,T:16,B:58,x0:470,x1:550,y0:0,y1:10});
+  const YF=510, P1=4, S=0.15;
+  const AS=y=>y<=YF?P1:P1+0.018*(y-YF)*(y-YF);
+  let scen="rec", showAns=false;
+  const start=()=>scen==="rec"?{y:490,p:P1}:{y:522,p:AS(522)};
+  function solve(c,p0){
+    const f=y=>(p0+S*(c-y))-Math.max(AS(y),p0);
+    let lo=400,hi=640; for(let i=0;i<60;i++){const m=(lo+hi)/2; if(f(m)>0)lo=m; else hi=m;}
+    const y=(lo+hi)/2; return {y:Math.round(y*100)/100,p:Math.max(AS(y),p0)};
+  }
+  function draw(){
+    const ink=css("--ink"),ghost=css("--ghost"),blue=css("--blue"),red=css("--accent"),green=css("--green"),amber=css("--amber");
+    const mpc=+$("fsMpc").value, dG=+$("fsG").value, dT=+$("fsT").value;
+    const m=1/(1-mpc), shift=dG*m-dT*mpc*m;
+    const s0=start(), c=s0.y+shift, e=solve(c,s0.p);
+    $("fsMpcVal").textContent=mpc.toFixed(2); $("fsGVal").textContent=(dG>0?"+":"")+B(dG); $("fsTVal").textContent=(dT>0?"+":"")+B(dT);
+    $("fsShift").textContent=Math.abs(shift)<1e-9?"No shift":(shift>0?"Right ":"Left ")+B(Math.abs(shift));
+    $("fsY").textContent=money(e.y,"billion");
+    const gap=YF-e.y;
+    $("fsGap").textContent=Math.abs(gap)<0.05?"None":B(Math.abs(gap))+(gap>0?" below":" above");
+    const bud=dT-dG;
+    $("fsBudget").textContent=Math.abs(bud)<1e-9?"No change":B(Math.abs(bud))+(bud<0?" toward a deficit":" toward a surplus");
+    P.clear(); P.axes("Real GDP (billions of dollars)","Price level");
+    P.seg(YF,0,YF,10,{stroke:green,"stroke-width":2,"stroke-dasharray":"6 4"});
+    lab(P,YF-1,0.4,"Full employment",green,"end");
+    P.fn(AS,470,550,{stroke:red,"stroke-width":3},120); lab(P,530,8.6,"AS",red);
+    if(scen==="inf"){P.seg(470,s0.p,s0.y,s0.p,{stroke:amber,"stroke-width":2,"stroke-dasharray":"2 4"}); P.text(472,s0.p+0.25,"Prices sticky downward",{fill:amber,"font-size":"12"});}
+    const adAt=(cc,p)=>cc+(s0.p-p)/S;
+    const moved=Math.abs(shift)>1e-9;
+    if(moved){P.fn(y=>s0.p+S*(s0.y-y),470,550,{stroke:ghost,"stroke-width":2,"stroke-dasharray":"6 5"}); lab(P,s0.y+15,s0.p-S*15-0.3,"AD₁",ghost);}
+    P.fn(y=>s0.p+S*(c-y),470,550,{stroke:blue,"stroke-width":3}); lab(P,c-13,s0.p+S*13+0.3,moved?"AD₂":"AD₁",blue,"end");
+    if(moved) P.dot(s0.y,s0.p,ghost,true);
+    P.drop(e.y,e.p,ink); P.dot(e.y,e.p,ink);
+    P.ytick(s0.p,scen==="rec"?"P₁":"P₂");
+    if(e.p>s0.p+0.15) P.ytick(e.p,"Higher");
+    P.xtick(e.y,"$"+Math.round(e.y)); if(moved && Math.abs(e.y-s0.y)>6) P.xtick(s0.y,"$"+s0.y,30);
+    // story
+    let st=[];
+    if(!moved){
+      st.push(scen==="rec"
+        ?"The economy is in a recession. Real GDP is $490 billion, $20 billion short of full employment. How much new spending would close the gap? Try changing G, taxes, or both."
+        :"Too much spending has pushed real GDP to $522 billion, $12 billion past full employment, and pulled the price level up. This is demand-pull inflation. Try cutting G, raising taxes, or both.");
+    } else {
+      if(dG!==0) st.push((dG>0?"Raising":"Cutting")+" government spending by "+B(Math.abs(dG))+" shifts AD by "+B(Math.abs(dG))+" × "+r2(m)+" = "+B(Math.abs(dG*m))+".");
+      if(dT!==0) st.push((dT<0?"Cutting":"Raising")+" taxes by "+B(Math.abs(dT))+" changes consumption by "+mpc.toFixed(2)+" × "+B(Math.abs(dT))+" = "+B(Math.abs(dT*mpc))+", so AD shifts by "+B(Math.abs(dT*mpc*m))+". A tax change moves AD less than the same change in G, because people save part of it.");
+      if(Math.abs(gap)<0.05) st.push("That closes the gap. Real GDP is right at full employment"+(scen==="inf"?", and because prices are sticky downward, the price level stays at P₂.":"."));
+      else if(scen==="rec"){
+        if(shift<0) st.push("That is contractionary policy, so it makes the recession worse. Real GDP falls to "+money(e.y,"billion")+".");
+        else if(e.y<YF) st.push("Real GDP rises to "+money(e.y,"billion")+", but "+B(gap)+" of the gap is still open.");
+        else st.push("That overshoots full employment, so the price level starts to rise. Now the economy has demand-pull inflation.");
+      } else {
+        if(shift>0) st.push("That is expansionary policy, so it adds to the inflation and pushes the price level even higher.");
+        else if(e.y>YF) st.push("Real GDP falls to "+money(e.y,"billion")+", still "+B(-gap)+" above full employment.");
+        else st.push("That cuts too much. Real GDP falls below full employment, and because prices are sticky downward, the price level does not come back down. Now there is a recession.");
+      }
+    }
+    $("fsStory").textContent=st.join(" ");
+    const g=scen==="rec"?20:12, dir=scen==="rec";
+    $("fsAns").textContent="The gap is $"+g+" billion and the multiplier is "+r2(m)+". "+(dir?"Raise":"Cut")+" G by $"+g+" ÷ "+r2(m)+" = "+B(g/m)+", or "+(dir?"cut":"raise")+" taxes by $"+g+" ÷ ("+mpc.toFixed(2)+" × "+r2(m)+") = "+B(g/(mpc*m))+". A mix of the two works too.";
+    $("fsAns").style.display=showAns?"block":"none";
+    $("fsAnsBtn").textContent=showAns?"Hide the answer":"Show the answer";
+  }
+  function setScen(s){scen=s; $("fsG").value=0; $("fsT").value=0; setOn(["fsRec","fsInf"],s==="rec"?"fsRec":"fsInf"); draw();}
+  $("fsRec").onclick=()=>setScen("rec"); $("fsInf").onclick=()=>setScen("inf");
+  $("fsReset").onclick=()=>{$("fsMpc").value=0.75; showAns=false; setScen(scen);};
+  $("fsAnsBtn").onclick=()=>{showAns=!showAns; draw();};
+  ["fsMpc","fsG","fsT"].forEach(i=>$(i).oninput=draw);
+  draw(); onTheme(draw);
+})();
+
+/* ---------- Ch 13, built-in stability ---------- */
+(function(){
+  const svg=$("stSvg"), P=plot(svg,{W:520,H:360,L:58,R:16,T:16,B:44,x0:400,x1:600,y0:250,y1:750});
+  let k=2, type="prog";
+  const T=y=>500+k*(y-500);
+  function draw(){
+    const ink=css("--ink"),red=css("--accent"),blue=css("--blue");
+    const y=+$("stY").value, t=T(y), d=t-500;
+    $("stYVal").textContent=money(y,"billion"); $("stT").textContent=money(t,"billion");
+    $("stB").textContent=Math.abs(d)<1e-9?"Balanced":(d<0?"Deficit of ":"Surplus of ")+money(Math.abs(d),"billion");
+    P.clear(); P.axes("Real GDP (billions of dollars)","G and T (billions of dollars)");
+    if(Math.abs(d)>1e-9) P.poly([[500,500],[y,500],[y,t]],{fill:css(d<0?"--amber-soft":"--blue-soft"),stroke:css(d<0?"--amber":"--blue"),"stroke-width":1});
+    P.seg(400,500,600,500,{stroke:blue,"stroke-width":3}); lab(P,596,512,"G",blue,"end");
+    P.fn(T,400,600,{stroke:red,"stroke-width":3}); lab(P,560,Math.min(T(560),735)+12,"T",red,"end");
+    P.seg(y,500,y,t,{stroke:ink,"stroke-width":2});
+    P.dot(y,t,ink);
+    P.xtick(500,"$500"); if(Math.abs(y-500)>=30) P.xtick(y,"$"+y);
+    P.ytick(500,"$500"); if(Math.abs(d)>=30) P.ytick(t,"$"+Math.round(t));
+    let s;
+    if(Math.abs(d)<1e-9) s="At $500 billion, tax revenue just covers government spending, so the budget is balanced. Move the slider left for a recession or right for a boom.";
+    else if(d<0) s="Real GDP fell to "+money(y,"billion")+". Incomes fell, so tax revenue dropped to "+money(t,"billion")+" on its own, and the budget shows a "+money(-d,"billion")+" deficit. Leaving that money with households softens the recession.";
+    else s="Real GDP rose to "+money(y,"billion")+". Incomes rose, so tax revenue climbed to "+money(t,"billion")+", and the budget shows a "+money(d,"billion")+" surplus. Pulling that money out cools the boom and helps hold back inflation.";
+    s+=" "+({prog:"With a progressive tax, revenue swings the most as GDP changes, so it gives the most built-in stability.",
+             prop:"With a proportional tax, revenue swings less than with a progressive tax, so it gives some stability.",
+             reg:"With a regressive tax, revenue barely moves with GDP, so it gives the least built-in stability."})[type];
+    $("stStory").textContent=s;
+  }
+  const setType=(t,kk,id)=>{type=t;k=kk;setOn(["stProg","stProp","stReg"],id);draw();};
+  $("stProg").onclick=()=>setType("prog",2,"stProg"); $("stProp").onclick=()=>setType("prop",1,"stProp"); $("stReg").onclick=()=>setType("reg",0.5,"stReg");
+  $("stY").oninput=draw;
+  draw(); onTheme(draw);
+})();
+
+/* ---------- Ch 14, money market ---------- */
+(function(){
+  const svg=$("mmSvg"), P=plot(svg,{W:520,H:380,L:46,R:16,T:16,B:48,x0:0,x1:400,y0:0,y1:12});
+  let ms=200, dt=100, parts=false;
+  const rate=(d,s)=>(d+250-s)/25;
+  function draw(){
+    const ink=css("--ink"),ghost=css("--ghost"),blue=css("--blue"),red=css("--accent"),muted=css("--muted");
+    const i=rate(dt,ms), bp=Math.round(5000/i);
+    $("mmI").textContent=r2(i)+"%"; $("mmB").textContent=money(bp);
+    P.clear(); P.axes("Amount of money (billions of dollars)","Interest rate (percent)");
+    if(parts){
+      P.seg(dt,0,dt,12,{stroke:muted,"stroke-width":1.5,"stroke-dasharray":"5 4"}); P.text(dt+4,11.3,"Dt",{fill:muted,"font-size":"13"});
+      P.fn(q=>(250-q)/25,-60,250,{stroke:muted,"stroke-width":1.5,"stroke-dasharray":"5 4"}); P.text(235,1.2,"Da",{fill:muted,"font-size":"13"});
+    }
+    if(ms!==200) P.seg(200,0,200,12,{stroke:ghost,"stroke-width":2,"stroke-dasharray":"6 5"});
+    if(dt!==100) P.fn(q=>(350-q)/25,0,400,{stroke:ghost,"stroke-width":2,"stroke-dasharray":"6 5"});
+    P.seg(ms,0,ms,12,{stroke:red,"stroke-width":3}); lab(P,ms+5,11.3,"Sm",red);
+    P.fn(q=>(dt+250-q)/25,0,400,{stroke:blue,"stroke-width":3}); lab(P,Math.min(dt+250-25*0.8,392),0.8,"Dm",blue,"end");
+    P.drop(ms,i,ink); P.dot(ms,i,ink);
+    P.ytick(i,r2(i)+"%"); P.xtick(ms,"$"+ms);
+    const a=ms-200, b=dt-100; let s;
+    if(!a&&!b) s="The money market starts in balance at a 6% interest rate. At that rate, a bond that pays $50 a year sells for about $833, because $50 is 6% of $833.";
+    else if(a&&!b) s=a>0
+      ?"The Fed added money. People will hold the extra money only if the interest rate falls, so the rate drops to "+r2(i)+"%. A bond that pays $50 a year is now worth about "+money(bp)+". When interest rates fall, bond prices rise."
+      :"The Fed pulled money out. With less money to go around, the interest rate rises to "+r2(i)+"%, and the $50 bond is now worth only about "+money(bp)+". When interest rates rise, bond prices fall.";
+    else if(b&&!a) s=b>0
+      ?"Nominal GDP rose, so people need more money to buy things. The transactions demand grows, money demand shifts right, and the interest rate climbs to "+r2(i)+"%. The bond price falls to about "+money(bp)+"."
+      :"Nominal GDP fell, so people need less money to buy things. Money demand shifts left, and the interest rate falls to "+r2(i)+"%. The bond price rises to about "+money(bp)+".";
+    else s="Both the money supply and money demand moved. The interest rate is now "+r2(i)+"% and the $50 bond sells for about "+money(bp)+". Bond prices and interest rates still move in opposite directions.";
+    $("mmStory").textContent=s;
+    $("mmSL").disabled=ms<=125; $("mmSR").disabled=ms>=275; $("mmGL").disabled=dt<=50; $("mmGR").disabled=dt>=150;
+    $("mmParts").textContent=parts?"Hide Dt and Da":"Show Dt and Da"; $("mmParts").classList.toggle("on",parts);
+  }
+  $("mmSL").onclick=()=>{ms-=25;draw();}; $("mmSR").onclick=()=>{ms+=25;draw();};
+  $("mmGL").onclick=()=>{dt-=25;draw();}; $("mmGR").onclick=()=>{dt+=25;draw();};
+  $("mmParts").onclick=()=>{parts=!parts;draw();};
+  $("mmReset").onclick=()=>{ms=200;dt=100;draw();};
+  draw(); onTheme(draw);
+})();
+
+/* ---------- Ch 15, open-market operations ---------- */
+(function(){
+  const flow=$("omoFlow"), svg=$("omoSvg"), P=plot(svg,{W:520,H:320,L:60,R:16,T:16,B:44,x0:40,x1:200,y0:600,y1:1400});
+  let b=0, s=0, last=null;
+  function arrow(x1,x2,y,label,col){
+    el("line",{x1:x1,y1:y,x2:x2,y2:y,stroke:col,"stroke-width":3,"marker-end":"url(#omoHead)"},flow);
+    el("text",{x:(x1+x2)/2,y:y-8,"text-anchor":"middle",fill:col,"font-weight":"700","font-size":"14"},flow,label);
+  }
+  function drawFlow(){
+    while(flow.firstChild)flow.removeChild(flow.firstChild);
+    const ink=css("--ink"), line=css("--line"), card=css("--bg"), green=css("--green"), blue=css("--blue"), ghost=css("--ghost");
+    const d=el("defs",{},flow), mk=el("marker",{id:"omoHead",viewBox:"0 0 10 10",refX:"8",refY:"5",markerWidth:"6",markerHeight:"6",orient:"auto-start-reverse"},d);
+    el("path",{d:"M0,0 L10,5 L0,10 Z",fill:"context-stroke"},mk);
+    [[10,"The Fed"],[350,"Banks and the public"]].forEach(([x,t])=>{
+      el("rect",{x:x,y:35,width:160,height:80,rx:12,fill:card,stroke:line},flow);
+      el("text",{x:x+80,y:80,"text-anchor":"middle",fill:ink,"font-weight":"700","font-size":"15"},flow,t);
+    });
+    if(last==="buy"){arrow(345,175,58,"Bonds",blue); arrow(175,345,100,"New money",green);}
+    else if(last==="sell"){arrow(175,345,58,"Bonds",blue); arrow(345,175,100,"Money taken out",green);}
+    else el("text",{x:260,y:82,"text-anchor":"middle",fill:ghost,"font-size":"13"},flow,"Pick an action");
+  }
+  function draw(){
+    const ink=css("--ink"),ghost=css("--ghost"),blue=css("--blue"),red=css("--accent");
+    const Q=100+10*(b+s), pr=1000+50*b-50*s, i=5000/pr, dm=10*(b-s);
+    $("omoM").textContent=(dm>0?"+":"")+B(dm); $("omoP").textContent=money(pr); $("omoI").textContent=i.toFixed(2)+"%";
+    $("omoPol").textContent=dm>0?"Expansionary":(dm<0?"Restrictive":"Neutral");
+    drawFlow();
+    P.clear(); P.axes("Quantity of bonds","Bond price (dollars)");
+    if(b>0){P.fn(q=>1500-5*q,40,200,{stroke:ghost,"stroke-width":2,"stroke-dasharray":"6 5"});}
+    if(s>0){P.fn(q=>500+5*q,40,200,{stroke:ghost,"stroke-width":2,"stroke-dasharray":"6 5"});}
+    P.fn(q=>1500-5*(q-20*b),40,200,{stroke:blue,"stroke-width":3}); lab(P,Math.min(152+20*b,196),1500-5*(Math.min(152+20*b,196)-20*b)+40,"D",blue,"end");
+    P.fn(q=>500+5*(q-20*s),40,200,{stroke:red,"stroke-width":3}); lab(P,Math.min(165+20*s,196),500+5*(Math.min(165+20*s,196)-20*s)+40,"S",red,"end");
+    P.drop(Q,pr,ink); P.dot(Q,pr,ink); P.ytick(pr,money(pr));
+    let st;
+    if(!last) st="Bonds start at $1,000. A bond that pays $50 a year at that price earns 5% interest. Click Fed buys bonds or Fed sells bonds.";
+    else if(last==="buy") st="The Fed buys $10 billion of bonds and pays with brand new money, so the money supply rises. Fed buying adds to bond demand, which pushes the bond price up to "+money(pr)+" and the interest rate down to "+i.toFixed(2)+"%. Lower rates make borrowing cheaper, which helps fight a recession.";
+    else st="The Fed sells $10 billion of bonds and takes the money it receives out of circulation, so the money supply falls. Fed selling adds to bond supply, which pushes the bond price down to "+money(pr)+" and the interest rate up to "+i.toFixed(2)+"%. Higher rates make borrowing costlier, which helps fight inflation.";
+    if(last) st+=" So far, the money supply has changed by "+(dm>0?"+":"")+B(dm)+".";
+    $("omoStory").textContent=st;
+    $("omoBuy").disabled=b>=3; $("omoSell").disabled=s>=3;
+  }
+  $("omoBuy").onclick=()=>{b++;last="buy";draw();}; $("omoSell").onclick=()=>{s++;last="sell";draw();};
+  $("omoReset").onclick=()=>{b=0;s=0;last=null;draw();};
+  draw(); onTheme(draw);
+})();
+
+/* ---------- Ch 15, chain ---------- */
+(function(){
+  const o={W:300,H:260,L:40,R:10,T:12,B:40};
+  const A=plot($("chA"),Object.assign({x0:100,x1:200,y0:0,y1:14},o));
+  const Bp=plot($("chB"),Object.assign({x0:0,x1:40,y0:0,y1:14},o));
+  const C=plot($("chC"),Object.assign({x0:860,x1:940,y0:2,y1:8},o));
+  const SM=[125,150,175], IR=[10,8,6], INV=[15,20,25], GDP=[880,900,910], PL=[4,4,5], CC=[880,900,920];
+  const AS=y=>y<=900?4:4+0.01*(y-900)*(y-900);
+  let k=0, last=null;
+  function draw(){
+    const ink=css("--ink"),ghost=css("--ghost"),blue=css("--blue"),red=css("--accent"),green=css("--green");
+    $("chI").textContent=IR[k]+"%"; $("chInv").textContent="$"+INV[k]+" billion"; $("chY").textContent="$"+GDP[k]+" billion"; $("chP").textContent=PL[k]===4?"P₂":"P₃ (higher)";
+    // (a)
+    A.clear(); A.axes("Money (billions)","Interest rate (%)");
+    SM.forEach((v,j)=>{A.seg(v,0,v,14,{stroke:j===k?red:ghost,"stroke-width":j===k?3:1.5,"stroke-dasharray":j===k?"none":"5 4"}); A.text(v,13.2,"Sm"+(j+1),{fill:j===k?red:ghost,"font-size":"11","text-anchor":"middle"});});
+    A.fn(q=>20-0.08*q,100,200,{stroke:blue,"stroke-width":3}); A.text(196,3.2,"Dm",{fill:blue,"font-size":"13","font-weight":"700","text-anchor":"end"});
+    A.drop(SM[k],IR[k],ink); A.dot(SM[k],IR[k],ink); A.ytick(IR[k],IR[k]+"%"); A.xtick(SM[k],"$"+SM[k]);
+    // (b)
+    Bp.clear(); Bp.axes("Investment (billions)","Interest rate (%)");
+    Bp.fn(I=>(40-I)/2.5,0,40,{stroke:blue,"stroke-width":3}); Bp.text(37,2.4,"ID",{fill:blue,"font-size":"13","font-weight":"700","text-anchor":"end"});
+    Bp.drop(INV[k],IR[k],ink); Bp.dot(INV[k],IR[k],ink); Bp.ytick(IR[k],IR[k]+"%"); Bp.xtick(INV[k],"$"+INV[k]);
+    // (c)
+    C.clear(); C.axes("Real GDP (billions)","Price level");
+    C.seg(900,2,900,8,{stroke:green,"stroke-width":1.5,"stroke-dasharray":"5 4"}); C.text(901,7.6,"Qf",{fill:green,"font-size":"12","font-weight":"700"});
+    C.fn(AS,860,940,{stroke:red,"stroke-width":3},100); C.text(925,7.4,"AS",{fill:red,"font-size":"13","font-weight":"700"});
+    CC.forEach((c,j)=>{C.fn(y=>4+0.1*(c-y),860,940,{stroke:j===k?blue:ghost,"stroke-width":j===k?3:1.5,"stroke-dasharray":j===k?"none":"5 4"}); const yy=Math.min(c+18,938); C.text(yy,4+0.1*(c-yy)-0.25,"AD"+(j+1),{fill:j===k?blue:ghost,"font-size":"11","text-anchor":"end"});});
+    C.drop(GDP[k],PL[k],ink); C.dot(GDP[k],PL[k],ink); C.ytick(4,"P₂"); C.ytick(5,"P₃"); C.xtick(GDP[k],"$"+GDP[k]);
+    const act=last==="exp"?"The Fed buys bonds, so the money supply rises. ":last==="res"?"The Fed sells bonds, so the money supply falls. ":"";
+    const txt=[
+      "The money supply is $125 billion, so the interest rate is 10% and businesses invest $15 billion. AD1 meets AS at $880 billion, $20 billion short of full employment. This is a recession, so the Fed should raise the money supply.",
+      "The money supply is $150 billion, so the interest rate falls to 8% and investment rises to $20 billion. That $5 billion of new investment, times the multiplier of 4, shifts AD right by $20 billion. Real GDP reaches full employment at $900 billion, and the price level stays at P₂.",
+      "The money supply is $175 billion, so the interest rate falls to 6% and investment rises to $25 billion. AD shifts right again, but the economy is already at full employment. Real GDP only creeps up to $910 billion, and the price level jumps to P₃. This is demand-pull inflation, so the Fed should lower the money supply back toward AD2."
+    ];
+    $("chStory").textContent=act+txt[k];
+    $("chExp").disabled=k>=2; $("chRes").disabled=k<=0;
+  }
+  $("chExp").onclick=()=>{k++;last="exp";draw();}; $("chRes").onclick=()=>{k--;last="res";draw();};
+  $("chReset").onclick=()=>{k=0;last=null;draw();};
+  draw(); onTheme(draw);
+})();
+
+/* ---------- Ch 19, comparative advantage ---------- */
+(function(){
+  const o={W:300,H:300,L:40,R:12,T:12,B:40};
+  const U=plot($("caUS"),Object.assign({x0:0,x1:32,y0:0,y1:48},o));
+  const M=plot($("caMX"),Object.assign({x0:0,x1:22,y0:0,y1:24},o));
+  let trade=false;
+  const f1=x=>(Math.round(x*10)/10).toString();
+  const sg=x=>(x>1e-9?"+":(x<-1e-9?"−":""))+f1(Math.abs(x));
+  function panel(P,maxB,maxV,before,after,tp,ticksX,ticksY,ptName){
+    const ink=css("--ink"),ghost=css("--ghost"),blue=css("--blue"),red=css("--accent"),green=css("--green");
+    P.clear(); P.axes("Beef (tons)","Vegetables (tons)");
+    ticksX.forEach(t=>P.xtick(t,String(t))); ticksY.forEach(t=>P.ytick(t,String(t)));
+    P.poly([[0,0],[maxB,0],[0,maxV]],{fill:css("--grid"),stroke:"none"});
+    P.seg(maxB,0,0,maxV,{stroke:ink,"stroke-width":2.5});
+    if(trade){P.seg(tp[0][0],tp[0][1],tp[1][0],tp[1][1],{stroke:green,"stroke-width":2.5,"stroke-dasharray":"6 4"});}
+    P.dot(before[0],before[1],trade?ghost:red,trade);
+    P.text(before[0]+0.6,before[1]+(maxV/30),ptName,{fill:trade?ghost:red,"font-size":"13","font-weight":"700"});
+    if(trade){P.dot(after[0],after[1],blue); P.text(after[0]+0.6,after[1]+(maxV/30),ptName+"′",{fill:blue,"font-size":"13","font-weight":"700"});}
+  }
+  function draw(){
+    const t=+$("caT").value; $("caTVal").textContent=t.toFixed(1);
+    const usA=[20,10*t], mxA=[10,20-10*t];
+    panel(U,30,30,[18,12],usA,[[30,0],[0,30*t]],[10,20,30],[10,20,30,40],"A");
+    panel(M,10,20,[8,4],mxA,[[0,20],[20/t,0]],[5,10,15,20],[5,10,15,20],"Z");
+    const tb=$("caTable").querySelector("tbody"); tb.innerHTML="";
+    [["United States","18 beef, 12 veg",usA,[2,10*t-12]],["Mexico","8 beef, 4 veg",mxA,[2,16-10*t]]].forEach(r=>{
+      const tr=document.createElement("tr");
+      [r[0],r[1],trade?f1(r[2][0])+" beef, "+f1(r[2][1])+" veg":"Not yet",trade?sg(r[3][0])+" beef, "+sg(r[3][1])+" veg":"Not yet"].forEach(x=>{const td=document.createElement("td");td.textContent=x;tr.appendChild(td);});
+      tb.appendChild(tr);});
+    let s;
+    const eps=1e-6;
+    if(!trade) s="In the United States, 1 ton of beef costs 1 ton of vegetables. In Mexico, it costs 2 tons. So the United States has the comparative advantage in beef, and Mexico has it in vegetables, even though the United States is better at making both. Each country starts at its own mix, point A and point Z.";
+    else {
+      s="The United States makes 30 tons of beef and Mexico makes 20 tons of vegetables. The United States trades 10 tons of beef for "+f1(10*t)+" tons of vegetables. ";
+      if(t>1+eps&&t<2-eps) s+="Both countries end up with more of both goods than they could make alone, beyond their own production lines.";
+      else if(t<1-eps) s+="The United States ends up with fewer vegetables than before, so it loses. It would never accept a price below its own opportunity cost of 1 ton of vegetables per ton of beef.";
+      else if(Math.abs(t-1)<eps) s+="The United States gains nothing at this price, since it can already turn 1 ton of beef into 1 ton of vegetables at home.";
+      else s+="Mexico gains nothing at this price, since it can already make 2 tons of vegetables in place of 1 ton of beef at home.";
+      s+=" Trade helps both countries only when the terms of trade fall between their opportunity costs, 1 and 2 tons of vegetables per ton of beef.";
+    }
+    $("caStory").textContent=s;
+    $("caTrade").textContent=trade?"Back to no trade":"Specialize and trade";
+  }
+  $("caTrade").onclick=()=>{trade=!trade;draw();};
+  $("caT").oninput=draw;
+  draw(); onTheme(draw);
+})();
+
+/* ---------- Ch 19, tariff ---------- */
+(function(){
+  const svg=$("tfSvg"), P=plot(svg,{W:520,H:380,L:50,R:16,T:16,B:58,x0:0,x1:110,y0:0,y1:70});
+  const PW=20, Qd=p=>100-p, Qs=p=>2*p-20;
+  const M=x=>money(Math.round(x*100)/100,"million");
+  function draw(){
+    const ink=css("--ink"),blue=css("--blue"),red=css("--accent"),amber=css("--amber"),muted=css("--muted");
+    const t=+$("tfT").value, pt=PW+t, qs=Qs(pt), qd=Qd(pt), imp=qd-qs;
+    const rev=t*imp, cl=t*(80+qd)/2, pg=t*(20+qs)/2, nl=cl-pg-rev;
+    $("tfTVal").textContent=money(t); $("tfP").textContent=money(pt);
+    $("tfQs").textContent=(Math.round(qs*10)/10)+" million"; $("tfQd").textContent=(Math.round(qd*10)/10)+" million"; $("tfM").textContent=(Math.round(imp*10)/10)+" million";
+    $("tfCL").textContent=M(cl); $("tfPG").textContent=M(pg); $("tfR").textContent=M(rev); $("tfNL").innerHTML="<b>"+M(nl)+"</b>";
+    P.clear(); P.axes("Sneakers (millions of pairs)","Price per pair (dollars)");
+    if(t>0){
+      P.poly([[qs,PW],[qd,PW],[qd,pt],[qs,pt]],{fill:css("--blue-soft"),stroke:blue,"stroke-width":1});
+      P.poly([[20,PW],[qs,pt],[qs,PW]],{fill:css("--amber-soft"),stroke:amber,"stroke-width":1});
+      P.poly([[qd,PW],[qd,pt],[80,PW]],{fill:css("--amber-soft"),stroke:amber,"stroke-width":1});
+    }
+    P.fn(q=>100-q,30,110,{stroke:blue,"stroke-width":3}); lab(P,104,2.5,"D",blue,"end");
+    P.fn(q=>(q+20)/2,0,110,{stroke:red,"stroke-width":3}); lab(P,104,64,"S",red,"end");
+    P.seg(0,PW,110,PW,{stroke:muted,"stroke-width":1.5,"stroke-dasharray":"6 4"}); P.text(108,PW-2.2,"World price",{fill:muted,"font-size":"12","text-anchor":"end"});
+    if(t>0){P.seg(0,pt,110,pt,{stroke:ink,"stroke-width":1.5,"stroke-dasharray":"3 4"}); P.text(108,pt+1.5,"With tariff",{fill:ink,"font-size":"12","text-anchor":"end"});}
+    if(imp>0.01){
+      const y=PW-5; P.seg(qs,y,qd,y,{stroke:ink,"stroke-width":1.5}); P.seg(qs,y-1,qs,y+1,{stroke:ink}); P.seg(qd,y-1,qd,y+1,{stroke:ink});
+      P.text((qs+qd)/2,y-3,"Imports",{fill:ink,"font-size":"12","text-anchor":"middle"});
+    }
+    P.dot(qs,pt,red); P.dot(qd,pt,blue);
+    P.ytick(PW,"$20"); if(t>0) P.ytick(pt,"$"+pt); if(t<20) P.ytick(40,"$40");
+    P.xtick(qs,String(Math.round(qs))); P.xtick(qd,String(Math.round(qd)),t>=15?30:16);
+    let s;
+    if(t===0) s="With free trade, U.S. buyers pay the world price of $20 a pair. U.S. firms make 20 million pairs, and the other 60 million pairs come from abroad. Without any trade, the price would be $40.";
+    else if(imp<0.01) s="A "+money(t)+" tariff raises the price all the way to $40, the price with no trade, so imports stop. This is a prohibitive tariff. The government collects nothing, U.S. producers gain "+M(pg)+", and consumers lose "+M(cl)+".";
+    else s="A "+money(t)+" tariff raises the price to "+money(pt)+". U.S. firms make more ("+Math.round(qs)+" million pairs), buyers buy less ("+Math.round(qd)+" million), and imports drop to "+Math.round(imp)+" million. The government collects "+M(rev)+" and U.S. producers gain "+M(pg)+", but consumers lose "+M(cl)+", so the country as a whole loses "+M(nl)+". That loss, the shaded triangles, goes to nobody.";
+    $("tfStory").textContent=s;
+  }
+  $("tfT").oninput=draw;
+  draw(); onTheme(draw);
+})();
+
 })();
 </script>
 </body>
