@@ -72,6 +72,12 @@ th{color:var(--muted);font-weight:600}
 .small{font-size:.85rem;color:var(--muted)}
 .axis text,.lbl{font-size:13px;fill:var(--ink)}
 .tick{font-size:12px;fill:var(--muted)}
+.totop{position:fixed;right:16px;bottom:16px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:.85rem;text-decoration:none;color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.sortitem{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:8px 0;background:var(--bg)}
+.sortitem .q{font-weight:600;margin-bottom:6px}
+.sortitem .opts{display:flex;gap:8px;flex-wrap:wrap}
+.sortitem .fb{margin-top:6px;font-size:.92rem}
+input.cell{width:64px;font:inherit;font-size:.88rem;padding:3px 4px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);text-align:right}
 footer{color:var(--muted);font-size:.9rem;border-top:1px solid var(--line);padding-top:16px;margin-top:32px}
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.85rem;color:var(--muted);margin-top:4px}
 .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:start}
@@ -95,10 +101,19 @@ button.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
   <p>Tessie Krishna, Feliciano School of Business, Montclair State University</p>
 </header>
 
-<nav class="index" aria-label="Tools by chapter">
+<a class="totop" href="#top">Back to top</a>
+<nav class="index" id="top" aria-label="Tools by chapter">
   <h2>Tools by chapter</h2>
   <ul>
-    <li>Chapter 11, Aggregate expenditures. <a href="#multiplier">The spending multiplier, round by round</a></li>
+    <li>Chapter 1, Limits, alternatives, and choices. <a href="#ppc">Production possibilities and opportunity cost</a></li>
+    <li>Chapter 2, The market system and the circular flow. <a href="#circular">The circular flow</a></li>
+    <li>Chapter 3, Demand, supply, and market equilibrium. <a href="#shifts">Which curve shifts?</a></li>
+    <li>Chapter 6, An introduction to macroeconomics. <a href="#sticky">Demand shocks with flexible and sticky prices</a></li>
+    <li>Chapter 7, Measuring domestic output and national income. <a href="#gdpsort">Does it count in GDP?</a>, <a href="#gdpbuild">Adding up GDP</a>, and <a href="#realgdp">Nominal versus real GDP</a></li>
+    <li>Chapter 8, Economic growth. <a href="#growth">The rule of 70</a></li>
+    <li>Chapter 9, Business cycles, unemployment, and inflation. <a href="#cycle">Phases of the business cycle</a>, <a href="#unemp">Who counts as unemployed?</a>, and <a href="#cpi">The CPI, inflation, and real income</a></li>
+    <li>Chapter 10, Basic macroeconomic relationships. <a href="#consume">Consumption and saving</a>, <a href="#invest">The investment demand curve</a>, and <a href="#multiplier">The spending multiplier, round by round</a></li>
+    <li>Chapter 11, The aggregate expenditures model. <a href="#ae">Equilibrium GDP and the 45° line</a></li>
     <li>Chapter 12, Aggregate demand and aggregate supply. <a href="#adas">Shifts in AD and AS</a></li>
     <li>Chapter 13, Fiscal policy, deficits, and debt. <a href="#fiscal">Close the gap with fiscal policy</a> and <a href="#stabilizers">Built-in stability</a></li>
     <li>Chapter 14, Money, the Federal Reserve, and interest rates. <a href="#money">How banks create money</a> and <a href="#moneymarket">The money market and bond prices</a></li>
@@ -107,9 +122,351 @@ button.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
   </ul>
 </nav>
 
+<!-- ============ CH 1, PPC ============ -->
+<section class="tool" id="ppc">
+  <p class="chap">Chapter 1, Limits, alternatives, and choices</p>
+  <h2>Production possibilities and opportunity cost</h2>
+  <p class="how">An economy can make pizzas (consumer goods) or industrial robots (capital goods). The curve shows the most it can make of both with its resources and technology. Click a point to see the trade-off, try a point inside the curve, then turn on economic growth.</p>
+  <div class="grid2">
+    <div><svg id="ppcSvg" viewBox="0 0 520 380" role="img" aria-label="Production possibilities curve"></svg></div>
+    <div>
+      <div class="controls" style="margin-top:0">
+        <div class="group"><span class="lab">Point</span><button id="ppA">A</button><button id="ppB">B</button><button id="ppC" class="on">C</button><button id="ppD">D</button><button id="ppE">E</button><button id="ppU">U (inside)</button></div>
+        <button id="ppGrow">Turn on economic growth</button>
+      </div>
+      <div class="stats">
+        <div class="stat"><span class="k">Pizzas (hundred thousands)</span><span class="v" id="ppPz">2</span></div>
+        <div class="stat"><span class="k">Robots (thousands)</span><span class="v" id="ppRb">7</span></div>
+      </div>
+      <div class="stat" style="margin-bottom:8px"><span class="k">Cost of the last 1 unit of pizza</span><span class="v" id="ppOC">2 thousand robots</span></div>
+      <div class="story" id="ppStory" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="check" data-quiz>
+    <p>Check yourself. Moving from point C to point D, the economy makes 1 more unit of pizza. How many robots does it give up?</p>
+    <div class="opts">
+      <button data-a="no" data-fb="Not quite. That was the cost of moving from A to B. Click C, then D, and compare the robots.">1</button>
+      <button data-a="no" data-fb="Not quite. That was the cost of moving from B to C. Costs keep rising as you go.">2</button>
+      <button data-a="ok" data-fb="Yes. Robots fall from 7 to 4, so the opportunity cost is 3 thousand robots. It keeps rising because resources are not equally good at making both goods.">3</button>
+      <button data-a="no" data-fb="Not quite. That is the cost of moving from D to E.">4</button>
+    </div>
+    <div class="fb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ============ CH 2, CIRCULAR FLOW ============ -->
+<section class="tool" id="circular">
+  <p class="chap">Chapter 2, The market system and the circular flow</p>
+  <h2>The circular flow</h2>
+  <p class="how">Households and businesses meet in two markets. In the product market, households buy goods and services. In the resource market, businesses buy labor, land, capital, and entrepreneurial ability. Pick a flow and click <b>Next step</b> to follow it around the circle.</p>
+  <div class="grid2">
+    <div>
+      <svg id="cfSvg" viewBox="0 0 520 380" role="img" aria-label="Circular flow diagram"></svg>
+      <div class="legend"><span><span class="sw" style="background:var(--green)"></span>Money flow</span><span><span class="sw" style="background:var(--blue)"></span>Real flow (goods, services, resources)</span></div>
+    </div>
+    <div>
+      <div class="controls" style="margin-top:0">
+        <div class="group"><span class="lab">Follow</span><button id="cfMoney" class="on">A dollar</button><button id="cfReal">The goods</button></div>
+        <button class="primary" id="cfNext">Next step</button>
+        <button id="cfReset">Start over</button>
+      </div>
+      <div class="stat" style="margin-bottom:8px"><span class="k">Step</span><span class="v" id="cfStep">Not started</span></div>
+      <div class="story" id="cfStory" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="check" data-quiz>
+    <p>Check yourself. You get paid for your part-time job. In which market did you sell something, and what was it?</p>
+    <div class="opts">
+      <button data-a="ok" data-fb="Yes. You sold your labor, a resource, so your paycheck is money income from the resource market.">The resource market, selling my labor</button>
+      <button data-a="no" data-fb="Not quite. The product market is where you buy goods and services. Your job means you sold something else.">The product market, selling goods</button>
+      <button data-a="no" data-fb="Not quite. Households buy in the product market. What did you sell to your employer?">The product market, buying goods</button>
+      <button data-a="no" data-fb="Not quite. Households sell resources. Businesses are the buyers in the resource market.">The resource market, buying resources</button>
+    </div>
+    <div class="fb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ============ CH 3, WHICH CURVE SHIFTS ============ -->
+<section class="tool" id="shifts">
+  <p class="chap">Chapter 3, Demand, supply, and market equilibrium</p>
+  <h2>Which curve shifts?</h2>
+  <p class="how">This is the market for gasoline from the textbook, where 200 buyers and 200 producers meet at $3 a gallon and 7,000 gallons a week. Read the event, then pick what happens. The graph shows the answer and the new equilibrium.</p>
+  <div class="grid2">
+    <div><svg id="shSvg" viewBox="0 0 520 380" role="img" aria-label="Gasoline market graph"></svg></div>
+    <div>
+      <div class="stat" style="margin-bottom:8px"><span class="k" id="shCount">Event 1 of 8</span><span class="v" id="shEvent" style="font-size:1.05rem"></span></div>
+      <div class="opts" style="display:flex;flex-wrap:wrap;gap:8px" id="shOpts">
+        <button data-ans="DR">Demand shifts right</button>
+        <button data-ans="DL">Demand shifts left</button>
+        <button data-ans="SR">Supply shifts right</button>
+        <button data-ans="SL">Supply shifts left</button>
+        <button data-ans="NO">No shift, a movement along a curve</button>
+      </div>
+      <div class="fb" id="shFb" aria-live="polite" style="margin-top:8px;min-height:1.4em"></div>
+      <div class="stats">
+        <div class="stat"><span class="k">Equilibrium price</span><span class="v" id="shP">$3.00</span></div>
+        <div class="stat"><span class="k">Equilibrium quantity</span><span class="v" id="shQ">7,000 gallons</span></div>
+      </div>
+      <div class="controls"><button class="primary" id="shNext">Next event</button><button id="shReset">Start over</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CH 6, DEMAND SHOCKS ============ -->
+<section class="tool" id="sticky">
+  <p class="chap">Chapter 6, An introduction to macroeconomics</p>
+  <h2>Demand shocks with flexible and sticky prices</h2>
+  <p class="how">A car maker plans to build 900 cars a week and sell them for $37,000 each. Then demand turns out lower or higher than expected. Compare what happens when the price can adjust with what happens when it is stuck.</p>
+  <div class="controls" style="margin-top:0">
+    <div class="group"><span class="lab">Prices are</span><button id="skFlex" class="on">Flexible</button><button id="skStick">Sticky</button></div>
+    <div class="group"><span class="lab">Demand turns out</span><button id="skLow">Low</button><button id="skMid" class="on">As expected</button><button id="skHigh">High</button></div>
+  </div>
+  <div class="grid2">
+    <div><svg id="skSvg" viewBox="0 0 520 360" role="img" aria-label="Car market with a demand shock"></svg></div>
+    <div>
+      <div class="stats">
+        <div class="stat"><span class="k">Price per car</span><span class="v" id="skP">$37,000</span></div>
+        <div class="stat"><span class="k">Cars sold per week</span><span class="v" id="skQ">900</span></div>
+      </div>
+      <div class="stat" style="margin-bottom:8px"><span class="k">Effect on inventory</span><span class="v" id="skInv">None</span></div>
+      <div class="story" id="skStory" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="check" data-quiz>
+    <p>Check yourself. Prices are sticky, and demand falls. What changes the most?</p>
+    <div class="opts">
+      <button data-a="ok" data-fb="Yes. The price stays put, so sales fall, inventory piles up, and the firm cuts output and workers. That is why sticky prices lead to recessions.">How many cars are sold and made</button>
+      <button data-a="no" data-fb="Not quite. That is what happens with flexible prices. Click Sticky and Low to compare.">The price of a car</button>
+      <button data-a="no" data-fb="Not quite. A drop in demand always changes something. Which one is stuck here?">Nothing changes</button>
+      <button data-a="no" data-fb="Not quite. The shock is to demand, not supply.">The supply curve</button>
+    </div>
+    <div class="fb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ============ CH 7, GDP SORTER ============ -->
+<section class="tool" id="gdpsort">
+  <p class="chap">Chapter 7, Measuring domestic output and national income</p>
+  <h2>Does it count in GDP?</h2>
+  <p class="how">GDP counts the market value of final goods and services produced this year in the United States. For each item, decide whether it counts. If it does, the feedback tells you which part of GDP it falls in (C, I, G, or net exports).</p>
+  <div class="stat" style="margin-bottom:10px"><span class="k">Your score</span><span class="v" id="gsScore">0 of 0</span></div>
+  <div id="gsList"></div>
+  <div class="controls"><button id="gsReset">Start over</button></div>
+</section>
+
+<!-- ============ CH 7, GDP BUILDER ============ -->
+<section class="tool" id="gdpbuild">
+  <p class="chap">Chapter 7, Measuring domestic output and national income</p>
+  <h2>Adding up GDP, C + I + G + Xn</h2>
+  <p class="how">The sliders start at the real 2024 U.S. numbers in billions of dollars. Change any part and watch GDP and the shares change. Notice that net exports are negative, because the United States imports more than it exports.</p>
+  <div class="grid2">
+    <div><svg id="gbSvg" viewBox="0 0 520 200" role="img" aria-label="Stacked bar of GDP components"></svg>
+      <div class="stat"><span class="k">GDP = C + I + G + Xn</span><span class="v" id="gbGDP">$29,185 billion</span></div>
+    </div>
+    <div>
+      <div class="slider"><label for="gbC"><span>Consumption (C)</span><span id="gbCv"></span></label><input type="range" id="gbC" min="15000" max="24000" step="1" value="19825"></div>
+      <div class="slider"><label for="gbI"><span>Investment (Ig)</span><span id="gbIv"></span></label><input type="range" id="gbI" min="2000" max="8000" step="1" value="5273"></div>
+      <div class="slider"><label for="gbG"><span>Government purchases (G)</span><span id="gbGv"></span></label><input type="range" id="gbG" min="3000" max="7000" step="1" value="4990"></div>
+      <div class="slider"><label for="gbX"><span>Net exports (Xn)</span><span id="gbXv"></span></label><input type="range" id="gbX" min="-2000" max="1000" step="1" value="-903"></div>
+      <button id="gbReset">Back to 2024</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CH 7, REAL GDP ============ -->
+<section class="tool" id="realgdp">
+  <p class="chap">Chapter 7, Measuring domestic output and national income</p>
+  <h2>Nominal GDP versus real GDP</h2>
+  <p class="how">An economy makes only pizza. Nominal GDP uses each year's prices, so it rises when prices rise even if output does not. Real GDP uses base-year prices (Year 1), so it only rises when output rises. The table fills in Years 1 to 3. Work out Years 4 and 5 yourself and click <b>Check</b>.</p>
+  <div class="grid2">
+    <div><svg id="rgSvg" viewBox="0 0 520 300" role="img" aria-label="Nominal and real GDP by year"></svg>
+      <div class="legend"><span><span class="sw" style="background:var(--accent)"></span>Nominal GDP</span><span><span class="sw" style="background:var(--blue)"></span>Real GDP</span></div></div>
+    <div>
+      <div class="tablebox"><table id="rgTable" aria-label="Pizza GDP table">
+        <thead><tr><th>Year</th><th>Units</th><th>Price</th><th>Price index</th><th>Nominal</th><th>Real</th></tr></thead><tbody></tbody></table></div>
+      <div class="controls"><button class="primary" id="rgCheck">Check</button><button id="rgShow">Show answers</button><button id="rgReset">Start over</button></div>
+      <div class="story" id="rgStory" aria-live="polite">Price index = (this year's price ÷ base-year price) × 100. Real GDP = nominal GDP ÷ (price index ÷ 100).</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CH 8, RULE OF 70 ============ -->
+<section class="tool" id="growth">
+  <p class="chap">Chapter 8, Economic growth</p>
+  <h2>The rule of 70 and the power of growth</h2>
+  <p class="how">Small differences in growth rates add up to huge differences over time. Pick two growth rates for real GDP per capita and watch how fast each one doubles. Years to double ≈ 70 ÷ the growth rate.</p>
+  <div class="grid2">
+    <div><svg id="grSvg" viewBox="0 0 520 320" role="img" aria-label="Real GDP per capita over 70 years"></svg>
+      <div class="legend"><span><span class="sw" style="background:var(--accent)"></span>Country A</span><span><span class="sw" style="background:var(--blue)"></span>Country B</span></div></div>
+    <div>
+      <div class="slider"><label for="grA"><span>Country A growth rate</span><span id="grAv">2%</span></label><input type="range" id="grA" min="0.5" max="10" step="0.5" value="2"></div>
+      <div class="slider"><label for="grB"><span>Country B growth rate</span><span id="grBv">4%</span></label><input type="range" id="grB" min="0.5" max="10" step="0.5" value="4"></div>
+      <div class="slider"><label for="grY"><span>Years from now</span><span id="grYv">35</span></label><input type="range" id="grY" min="0" max="70" step="1" value="35"></div>
+      <div class="stats">
+        <div class="stat"><span class="k">A doubles in about</span><span class="v" id="grAd">35 years</span></div>
+        <div class="stat"><span class="k">B doubles in about</span><span class="v" id="grBd">17.5 years</span></div>
+        <div class="stat"><span class="k">A's income per person</span><span class="v" id="grAi"></span></div>
+        <div class="stat"><span class="k">B's income per person</span><span class="v" id="grBi"></span></div>
+      </div>
+      <div class="story" id="grStory" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="check" data-quiz>
+    <p>Check yourself. Real GDP per capita grows 7 percent a year. About how long until it doubles?</p>
+    <div class="opts">
+      <button data-a="no" data-fb="Not quite. Divide 70 by the growth rate, 7.">7 years</button>
+      <button data-a="ok" data-fb="Yes. 70 ÷ 7 = 10 years.">10 years</button>
+      <button data-a="no" data-fb="Not quite. That would be the doubling time at 1 percent growth.">70 years</button>
+      <button data-a="no" data-fb="Not quite. Divide 70 by 7 rather than multiplying.">490 years</button>
+    </div>
+    <div class="fb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ============ CH 9, BUSINESS CYCLE ============ -->
+<section class="tool" id="cycle">
+  <p class="chap">Chapter 9, Business cycles, unemployment, and inflation</p>
+  <h2>Phases of the business cycle</h2>
+  <p class="how">Real GDP grows over time, but not smoothly. Drag the slider to move through time and watch the phase change. Notice what usually happens to unemployment in each phase.</p>
+  <svg id="bcSvg" viewBox="0 0 860 300" role="img" aria-label="Business cycle graph"></svg>
+  <div class="slider"><label for="bcT"><span>Time</span><span id="bcTv"></span></label><input type="range" id="bcT" min="0" max="100" step="1" value="10"></div>
+  <div class="stats">
+    <div class="stat"><span class="k">Phase</span><span class="v" id="bcPh">Expansion</span></div>
+    <div class="stat"><span class="k">Unemployment usually</span><span class="v" id="bcU">Falls</span></div>
+  </div>
+  <div class="story" id="bcStory" aria-live="polite"></div>
+</section>
+
+<!-- ============ CH 9, UNEMPLOYMENT ============ -->
+<section class="tool" id="unemp">
+  <p class="chap">Chapter 9, Business cycles, unemployment, and inflation</p>
+  <h2>Who counts as unemployed?</h2>
+  <p class="how">The numbers start at the real 2024 U.S. figures in millions. The unemployment rate is the unemployed divided by the labor force (employed plus unemployed). Click an event to move 1 million people and watch the rate change. Some of the results may surprise you.</p>
+  <div class="grid2">
+    <div><svg id="unSvg" viewBox="0 0 520 260" role="img" aria-label="Population groups"></svg></div>
+    <div>
+      <div class="controls" style="margin-top:0;flex-direction:column;align-items:stretch">
+        <button id="unLay">Layoffs, 1 million workers lose their jobs</button>
+        <button id="unHire">Hiring, 1 million unemployed people find jobs</button>
+        <button id="unDisc">1 million unemployed people give up looking</button>
+        <button id="unJoin">1 million students start looking for work</button>
+        <button id="unReset">Back to 2024</button>
+      </div>
+      <div class="stats">
+        <div class="stat"><span class="k">Labor force</span><span class="v" id="unLF">168.3 million</span></div>
+        <div class="stat"><span class="k">Unemployment rate</span><span class="v" id="unR">4.2%</span></div>
+      </div>
+      <div class="story" id="unStory" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="check" data-quiz>
+    <p>Check yourself. Discouraged workers stop looking for jobs. What happens to the official unemployment rate?</p>
+    <div class="opts">
+      <button data-a="ok" data-fb="Yes. They leave the labor force, so they no longer count as unemployed. The rate falls even though no one found a job, which is a known weakness of the measure.">It falls</button>
+      <button data-a="no" data-fb="Not quite. People not looking for work are not counted in the labor force at all. Try the button and see.">It rises</button>
+      <button data-a="no" data-fb="Not quite. Both the unemployed count and the labor force change. Try the button and see.">It stays the same</button>
+      <button data-a="no" data-fb="Not quite. They count as not in the labor force, not employed.">They count as employed</button>
+    </div>
+    <div class="fb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ============ CH 9, CPI ============ -->
+<section class="tool" id="cpi">
+  <p class="chap">Chapter 9, Business cycles, unemployment, and inflation</p>
+  <h2>The CPI, inflation, and real income</h2>
+  <p class="how">The CPI compares what the same basket of goods costs now with what it cost in the base year. Set the basket costs and your pay, and see how much your income can really buy.</p>
+  <div class="grid2">
+    <div>
+      <div class="slider"><label for="cpB"><span>Basket cost in the base year</span><span id="cpBv">$80</span></label><input type="range" id="cpB" min="50" max="150" step="1" value="80"></div>
+      <div class="slider"><label for="cpN"><span>Same basket this year</span><span id="cpNv">$92</span></label><input type="range" id="cpN" min="50" max="200" step="1" value="92"></div>
+      <div class="slider"><label for="cpW"><span>Your yearly pay (nominal income)</span><span id="cpWv">$40,000</span></label><input type="range" id="cpW" min="20000" max="80000" step="1000" value="40000"></div>
+      <div class="stats">
+        <div class="stat"><span class="k">CPI this year</span><span class="v" id="cpCPI">115</span></div>
+        <div class="stat"><span class="k">Inflation since base year</span><span class="v" id="cpInf">15%</span></div>
+        <div class="stat"><span class="k">Real income (base-year dollars)</span><span class="v" id="cpReal">$34,783</span></div>
+        <div class="stat"><span class="k">Raise needed to keep up</span><span class="v" id="cpNeed">$6,000</span></div>
+      </div>
+    </div>
+    <div><div class="story" id="cpStory" aria-live="polite" style="margin-top:0"></div></div>
+  </div>
+  <div class="check" data-quiz>
+    <p>Check yourself. A basket cost $200 in the base year and costs $250 now. What is the CPI?</p>
+    <div class="opts">
+      <button data-a="no" data-fb="Not quite. That is the price increase in dollars. CPI = (250 ÷ 200) × 100.">50</button>
+      <button data-a="no" data-fb="Not quite. That flips the fraction. Divide this year's cost by the base-year cost.">80</button>
+      <button data-a="ok" data-fb="Yes. (250 ÷ 200) × 100 = 125, so prices rose 25 percent.">125</button>
+      <button data-a="no" data-fb="Not quite. CPI = (250 ÷ 200) × 100.">250</button>
+    </div>
+    <div class="fb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ============ CH 10, CONSUMPTION ============ -->
+<section class="tool" id="consume">
+  <p class="chap">Chapter 10, Basic macroeconomic relationships</p>
+  <h2>Consumption, saving, APC, and MPC</h2>
+  <p class="how">This is the consumption schedule from the textbook. Move disposable income and see how much households consume and save. Where the consumption line sits above the 45° line, households dissave. Then shift the whole schedule with a change in wealth or expectations.</p>
+  <div class="grid2">
+    <div><svg id="csSvg" viewBox="0 0 520 380" role="img" aria-label="Consumption schedule and 45 degree line"></svg></div>
+    <div>
+      <div class="slider"><label for="csY"><span>Disposable income</span><span id="csYv">$470 billion</span></label><input type="range" id="csY" min="370" max="550" step="20" value="470"></div>
+      <div class="controls">
+        <div class="group"><span class="lab">Shift C</span><button id="csDn">◀ Down</button><button id="csUp">Up ▶</button></div>
+      </div>
+      <div class="stats">
+        <div class="stat"><span class="k">Consumption</span><span class="v" id="csC"></span></div>
+        <div class="stat"><span class="k">Saving</span><span class="v" id="csS"></span></div>
+        <div class="stat"><span class="k">APC and APS</span><span class="v" id="csAP"></span></div>
+        <div class="stat"><span class="k">MPC and MPS</span><span class="v">0.75 and 0.25</span></div>
+      </div>
+      <div class="story" id="csStory" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="check" data-quiz>
+    <p>Check yourself. Your take-home pay rises from $2,000 to $2,200 a month, and you spend $150 of the extra money. What is your MPC?</p>
+    <div class="opts">
+      <button data-a="no" data-fb="Not quite. That is your MPS, the share of the extra $200 you saved.">0.25</button>
+      <button data-a="ok" data-fb="Yes. You spent $150 of the extra $200, and 150 ÷ 200 = 0.75.">0.75</button>
+      <button data-a="no" data-fb="Not quite. The MPC uses only the change in income, the extra $200.">0.068</button>
+      <button data-a="no" data-fb="Not quite. Divide the extra spending by the extra income.">150</button>
+    </div>
+    <div class="fb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ============ CH 10, INVESTMENT DEMAND ============ -->
+<section class="tool" id="invest">
+  <p class="chap">Chapter 10, Basic macroeconomic relationships</p>
+  <h2>The investment demand curve</h2>
+  <p class="how">A firm invests in a project when its expected rate of return beats the real interest rate it pays to borrow. Move the interest rate and see how much investment is worth doing. Then shift the curve with a change in expectations, technology, or business taxes.</p>
+  <div class="grid2">
+    <div><svg id="ivSvg" viewBox="0 0 520 360" role="img" aria-label="Investment demand curve"></svg></div>
+    <div>
+      <div class="slider"><label for="ivI"><span>Real interest rate</span><span id="ivIv">8%</span></label><input type="range" id="ivI" min="0" max="16" step="1" value="8"></div>
+      <div class="controls">
+        <div class="group"><span class="lab">Shift ID</span><button id="ivL">◀ Left</button><button id="ivR">Right ▶</button></div>
+        <button id="ivReset">Start over</button>
+      </div>
+      <div class="stat" style="margin-bottom:8px"><span class="k">Investment worth doing</span><span class="v" id="ivAmt">$20 billion</span></div>
+      <div class="story" id="ivStory" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="check" data-quiz>
+    <p>Check yourself. New lanes for a bowling alley cost $200,000 and add $16,000 a year in profit. Borrowing costs 6 percent. Should the owner invest?</p>
+    <div class="opts">
+      <button data-a="ok" data-fb="Yes. The expected return is 16,000 ÷ 200,000 = 8 percent, which beats the 6 percent interest rate.">Yes, the 8% return beats 6%</button>
+      <button data-a="no" data-fb="Not quite. Work out the expected return, 16,000 ÷ 200,000, and compare it with 6 percent.">No, the return is too low</button>
+      <button data-a="no" data-fb="Not quite. Compare the expected return with the interest rate, not the dollar amounts.">No, $200,000 is more than $16,000</button>
+      <button data-a="no" data-fb="Not quite. The decision depends on the interest rate.">It does not matter what rates are</button>
+    </div>
+    <div class="fb" aria-live="polite"></div>
+  </div>
+</section>
+
 <!-- ============ TOOL 1, MULTIPLIER ============ -->
 <section class="tool" id="multiplier">
-  <p class="chap">Chapter 11, Aggregate expenditures</p>
+  <p class="chap">Chapter 10, Basic macroeconomic relationships</p>
   <h2>The spending multiplier, round by round</h2>
   <p class="how">A business spends more on new equipment. That spending becomes someone's income. They spend part of it (the MPC) and save the rest, and their spending becomes someone else's income. Click <b>Next round</b> to follow the money, or <b>Show all rounds</b> to jump to the end.</p>
   <div class="grid2">
@@ -145,6 +502,37 @@ button.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
       <button data-a="no" data-fb="Not quite. The MPS is 0.2 here, and the multiplier is 1 divided by the MPS.">2</button>
       <button data-a="ok" data-fb="Yes. The MPS is 1 − 0.8 = 0.2, and 1 / 0.2 = 5. Set the slider to 0.80 to see it.">5</button>
       <button data-a="no" data-fb="Not quite. The multiplier is 1 / (1 − MPC). Try setting the slider to 0.80.">8</button>
+    </div>
+    <div class="fb" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ============ CH 11, AE MODEL ============ -->
+<section class="tool" id="ae">
+  <p class="chap">Chapter 11, The aggregate expenditures model</p>
+  <h2>Equilibrium GDP and the 45° line</h2>
+  <p class="how">Aggregate expenditures (AE = C + Ig) are what households and firms plan to spend at each level of real GDP. Equilibrium is where AE crosses the 45° line, so spending equals output. Pick a level of GDP to see whether inventories pile up or run down, then change planned investment and compare equilibrium with full employment at $510 billion.</p>
+  <div class="grid2">
+    <div><svg id="aeSvg" viewBox="0 0 520 400" role="img" aria-label="Aggregate expenditures and the 45 degree line"></svg></div>
+    <div>
+      <div class="slider"><label for="aeI"><span>Planned investment (Ig)</span><span id="aeIv">$20 billion</span></label><input type="range" id="aeI" min="5" max="40" step="5" value="20"></div>
+      <div class="slider"><label for="aeY"><span>Test a level of GDP</span><span id="aeYv">$430 billion</span></label><input type="range" id="aeY" min="370" max="550" step="20" value="430"></div>
+      <div class="stats">
+        <div class="stat"><span class="k">Planned spending at that GDP</span><span class="v" id="aeAE"></span></div>
+        <div class="stat"><span class="k">Unplanned inventory change</span><span class="v" id="aeInv"></span></div>
+        <div class="stat"><span class="k">Equilibrium GDP</span><span class="v" id="aeEq"></span></div>
+        <div class="stat"><span class="k">Compared with full employment</span><span class="v" id="aeGap"></span></div>
+      </div>
+      <div class="story" id="aeStory" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="check" data-quiz>
+    <p>Check yourself. At the current level of GDP, inventories are piling up. What will happen next?</p>
+    <div class="opts">
+      <button data-a="ok" data-fb="Yes. Spending falls short of output, so firms cut production until GDP falls to equilibrium.">Firms cut output, so GDP falls</button>
+      <button data-a="no" data-fb="Not quite. Piling inventories mean firms made more than people bought. Would they make more?">Firms raise output, so GDP rises</button>
+      <button data-a="no" data-fb="Not quite. Unplanned inventory changes push GDP toward equilibrium.">Nothing, the economy is at equilibrium</button>
+      <button data-a="no" data-fb="Not quite. In this stuck-price model, output adjusts, not prices.">Prices rise</button>
     </div>
     <div class="fb" aria-live="polite"></div>
   </div>
@@ -1057,6 +1445,488 @@ const lab=(P,x,y,t,col,anchor)=>P.text(x,y,t,{fill:col,"font-weight":"700","font
   }
   $("tfT").oninput=draw;
   draw(); onTheme(draw);
+})();
+
+})();
+</script>
+
+<script>
+/* ================= Chapters 1 to 11 ================= */
+(function(){
+const {el,css,money,$,plot,onTheme,setOn}=MI;
+const lab=(P,x,y,t,col,anchor)=>P.text(x,y,t,{fill:col,"font-weight":"700","font-size":"14","text-anchor":anchor||"start"});
+const B=x=>(x<-1e-9?"−":"")+money(Math.abs(Math.round(x*100)/100),"billion");
+const fmt=(x,d)=>x.toLocaleString("en-US",{minimumFractionDigits:d||0,maximumFractionDigits:d||0});
+
+/* ---------- Ch 1, PPC ---------- */
+(function(){
+  const svg=$("ppcSvg"), P=plot(svg,{W:520,H:380,L:50,R:16,T:16,B:48,x0:0,x1:9,y0:0,y1:15});
+  const f0=p=>10-0.5*p-0.5*p*p, f1=p=>14-0.75*p-0.125*p*p;
+  const pts0=[[0,10],[1,9],[2,7],[3,4],[4,0]], pts1=[[0,14],[2,12],[4,9],[6,5],[8,0]], names="ABCDE";
+  let sel=2, grow=false;
+  function draw(){
+    const ink=css("--ink"),ghost=css("--ghost"),red=css("--accent"),green=css("--green"),blue=css("--blue");
+    P.clear(); P.axes("Pizzas (hundred thousands)","Industrial robots (thousands)");
+    for(let i=0;i<=8;i++)P.xtick(i,String(i)); [0,2,4,6,8,10,12,14].forEach(v=>P.ytick(v,String(v)));
+    const pts=[]; for(let i=0;i<=40;i++){const p=4*i/40;pts.push([p,f0(p)]);}
+    P.poly([[0,0]].concat(pts),{fill:css("--grid"),stroke:"none"});
+    if(grow){P.fn(f1,0,8,{stroke:green,"stroke-width":3}); lab(P,6.6,4.4,"New curve",green);}
+    P.path(pts,{stroke:grow?ghost:blue,"stroke-width":3,"stroke-dasharray":grow?"6 5":"none"});
+    const cur=grow?pts1:pts0;
+    if(grow) pts0.forEach((p,i)=>{P.dot(p[0],p[1],ghost,true);});
+    cur.forEach((p,i)=>{P.dot(p[0],p[1],i===sel?red:(grow?green:blue)); P.text(p[0]+0.15,p[1]+0.45,names[i]+(grow?"′":""),{fill:ink,"font-size":"13","font-weight":"700"});});
+    P.dot(2,4,sel===5?red:ghost,sel!==5); P.text(2.15,4.45,"U",{fill:ink,"font-size":"13","font-weight":"700"});
+    const s=sel===5?[2,4]:cur[sel];
+    P.drop(s[0],s[1],red);
+    $("ppPz").textContent=String(s[0]); $("ppRb").textContent=String(s[1]);
+    let oc, st;
+    if(sel===5){oc="Nothing given up"; st="Point U is inside the curve, so some resources sit idle, as in a recession with unemployment. The economy could make more of both goods just by putting those resources to work.";}
+    else if(sel===0){oc="None, no pizza yet"; st="At "+names[0]+(grow?"′":"")+", the economy makes only robots, "+s[1]+" thousand of them, and no pizza.";}
+    else{
+      const prev=cur[sel-1], dp=s[0]-prev[0], dr=prev[1]-s[1];
+      oc=(grow?(dr+" thousand robots for "+dp+" units"):(dr+" thousand robots"));
+      st="Moving from "+names[sel-1]+" to "+names[sel]+(grow?"′":"")+" adds "+dp+(dp===1?" unit":" units")+" of pizza but costs "+dr+" thousand robots. ";
+      st+=grow?"The costs still rise as the economy makes more pizza.":"Each extra unit of pizza costs more robots than the last one (1, then 2, then 3, then 4). That is the law of increasing opportunity costs, and it is why the curve bows outward.";
+      if(sel===4) st+=" At "+names[4]+(grow?"′":"")+", the economy makes only pizza.";
+    }
+    if(grow&&sel!==5) st+=" With more resources or better technology, the whole curve shifts out, so the economy can make more of both goods. Compare C′ (4 pizza, 9 robots) with the old C (2 pizza, 7 robots).";
+    $("ppOC").textContent=oc; $("ppStory").textContent=st;
+    $("ppGrow").textContent=grow?"Turn off economic growth":"Turn on economic growth"; $("ppGrow").classList.toggle("on",grow);
+    ["ppA","ppB","ppC","ppD","ppE"].forEach((id,i)=>{$(id).textContent=names[i]+(grow?"′":""); $(id).classList.toggle("on",i===sel);}); $("ppU").classList.toggle("on",sel===5);
+  }
+  ["ppA","ppB","ppC","ppD","ppE","ppU"].forEach((id,i)=>$(id).onclick=()=>{sel=i;draw();});
+  $("ppGrow").onclick=()=>{grow=!grow;draw();};
+  draw(); onTheme(draw);
+})();
+
+/* ---------- Ch 2, circular flow ---------- */
+(function(){
+  const svg=$("cfSvg");
+  const M=[{d:"M40,160 L40,40 L190,40",t:"Consumption expenditures",x:115,y:32},
+           {d:"M330,40 L480,40 L480,160",t:"Revenue",x:405,y:32},
+           {d:"M480,220 L480,340 L330,340",t:"Costs",x:405,y:358},
+           {d:"M190,340 L40,340 L40,220",t:"Money income",x:115,y:358}];
+  const R=[{d:"M90,220 L90,315 L190,315",t:"Labor, land, capital,",t2:"entrepreneurial ability",x:140,y:284},
+           {d:"M330,315 L430,315 L430,220",t:"Resources",x:380,y:305},
+           {d:"M430,160 L430,65 L330,65",t:"Goods and services",x:380,y:82},
+           {d:"M190,65 L90,65 L90,160",t:"Goods and services",x:140,y:82}];
+  const storyM=["You spend $10 on a burrito. That is a consumption expenditure in the product market.",
+    "The restaurant receives your $10 as revenue.",
+    "The restaurant pays its costs, like wages for the cook and rent for the building, in the resource market.",
+    "Those payments become money income for households, like the cook, who can spend it again. The money keeps going around the circle."];
+  const storyR=["Households sell their labor, land, capital, and entrepreneurial ability in the resource market.",
+    "Businesses buy those resources and use them to produce.",
+    "Businesses sell the goods and services they make in the product market.",
+    "Households buy those goods and services and use them. The real flow runs the opposite way from the money flow."];
+  let mode="money", step=0;
+  function draw(){
+    while(svg.firstChild)svg.removeChild(svg.firstChild);
+    const ink=css("--ink"),line=css("--line"),bg=css("--bg"),green=css("--green"),blue=css("--blue"),muted=css("--muted");
+    const d=el("defs",{},svg);
+    [["cfHg",green],["cfHb",blue]].forEach(([id,c])=>{const m=el("marker",{id:id,viewBox:"0 0 10 10",refX:"8",refY:"5",markerWidth:"5",markerHeight:"5",orient:"auto-start-reverse"},d);el("path",{d:"M0,0 L10,5 L0,10 Z",fill:c},m);});
+    const box=(x,y,w,h,t,sub)=>{el("rect",{x:x,y:y,width:w,height:h,rx:10,fill:bg,stroke:line},svg);el("text",{x:x+w/2,y:y+(sub?h/2-2:h/2+5),"text-anchor":"middle",fill:ink,"font-weight":"700","font-size":"14"},svg,t);if(sub)el("text",{x:x+w/2,y:y+h/2+15,"text-anchor":"middle",fill:muted,"font-size":"10.5"},svg,sub);};
+    box(20,160,130,60,"Households"); box(370,160,130,60,"Businesses");
+    box(190,18,140,62,"Product market","Households buy, firms sell"); box(190,298,140,62,"Resource market","Households sell, firms buy");
+    const drawSet=(arr,col,head,isMode)=>arr.forEach((a,i)=>{
+      const active=isMode&&step===i+1, op=step===0?1:(isMode?(active?1:0.45):0.15);
+      el("path",{d:a.d,fill:"none",stroke:col,"stroke-width":active?5:3,opacity:op,"marker-end":"url(#"+head+")"},svg);
+      el("text",{x:a.x,y:a.y,"text-anchor":"middle",fill:col,"font-size":"11","font-weight":active?"700":"500",opacity:op},svg,a.t);
+      if(a.t2) el("text",{x:a.x,y:a.y+12,"text-anchor":"middle",fill:col,"font-size":"11","font-weight":active?"700":"500",opacity:op},svg,a.t2);
+    });
+    drawSet(M,green,"cfHg",mode==="money"); drawSet(R,blue,"cfHb",mode==="real");
+    if(step>0){
+      const a=(mode==="money"?M:R)[step-1], col=mode==="money"?green:blue;
+      const g=el("g",{},svg); el("circle",{r:9,fill:col},g); el("text",{y:4,"text-anchor":"middle",fill:"#fff","font-size":"11","font-weight":"700"},g,mode==="money"?"$":"•");
+      const an=el("animateMotion",{dur:"1.2s",path:a.d,fill:"freeze",begin:"indefinite"},g);
+      try{an.beginElement();}catch(e){}
+    }
+    $("cfStep").textContent=step===0?"Not started":"Step "+step+" of 4";
+    $("cfStory").textContent=step===0?(mode==="money"?"Click Next step to follow a dollar from a household around the circle.":"Click Next step to follow resources and goods around the circle."):(mode==="money"?storyM:storyR)[step-1];
+  }
+  $("cfMoney").onclick=()=>{mode="money";step=0;setOn(["cfMoney","cfReal"],"cfMoney");draw();};
+  $("cfReal").onclick=()=>{mode="real";step=0;setOn(["cfMoney","cfReal"],"cfReal");draw();};
+  $("cfNext").onclick=()=>{step=step%4+1;draw();};
+  $("cfReset").onclick=()=>{step=0;draw();};
+  draw(); onTheme(draw);
+})();
+
+/* ---------- Ch 3, which curve shifts ---------- */
+(function(){
+  const svg=$("shSvg"), P=plot(svg,{W:520,H:380,L:50,R:16,T:16,B:48,x0:0,x1:20000,y0:0,y1:6});
+  const PP=[1,2,3,4,5], DQ=[16000,11000,7000,4000,2000], SQ=[1000,4000,7000,10000,12000];
+  const interp=(p,Q)=>{let i=0; if(p<=PP[0])i=0; else if(p>=PP[4])i=3; else i=Math.min(3,Math.floor(p-1)); const t=(p-PP[i])/(PP[i+1]-PP[i]); return Q[i]+t*(Q[i+1]-Q[i]);};
+  const EV=[
+    {t:"Electric cars become much cheaper.",a:"DL",w:"Electric cars are a substitute for driving a gas car. When a substitute gets cheaper, buyers want less gasoline at every price, so demand shifts left."},
+    {t:"A refinery fire shuts down part of the country's gasoline production.",a:"SL",w:"Producers can make less gasoline at every price, so supply shifts left."},
+    {t:"Thousands of people move to the area and drive to work.",a:"DR",w:"More buyers means more gasoline demanded at every price, so demand shifts right."},
+    {t:"New drilling technology cuts the cost of producing gasoline.",a:"SR",w:"Better technology lowers costs, so producers supply more at every price. Supply shifts right."},
+    {t:"Drivers hear that gas prices will jump next week.",a:"DR",w:"Expecting higher prices later, buyers fill up now, so demand today shifts right."},
+    {t:"The government adds a new tax on gasoline producers.",a:"SL",w:"A tax raises producers' costs, so they supply less at every price. Supply shifts left."},
+    {t:"The price of gasoline rises from $3 to $4 a gallon.",a:"NO",w:"A change in a good's own price does not shift either curve. It moves along the curves. At $4, producers want to sell 10,000 gallons but buyers want only 4,000, a surplus of 6,000 gallons, so the price falls back to $3."},
+    {t:"Incomes rise, and gasoline is a normal good.",a:"DR",w:"With more income, buyers want more of a normal good at every price, so demand shifts right."}];
+  const NAMES={DR:"Demand shifts right",DL:"Demand shifts left",SR:"Supply shifts right",SL:"Supply shifts left",NO:"No shift, a movement along a curve"};
+  let k=0, answered=false, score=0;
+  function draw(){
+    const ink=css("--ink"),ghost=css("--ghost"),blue=css("--blue"),red=css("--accent"),amber=css("--amber");
+    const e=EV[k], a=answered?e.a:null;
+    const dD=a==="DR"?3000:a==="DL"?-3000:0, dS=a==="SR"?3000:a==="SL"?-3000:0;
+    let lo=0.2,hi=8; for(let i=0;i<60;i++){const m=(lo+hi)/2; if(interp(m,DQ)+dD>interp(m,SQ)+dS)lo=m; else hi=m;}
+    const pe=(lo+hi)/2, qe=interp(pe,SQ)+dS;
+    P.clear(); P.axes("Gallons of gasoline per week","Price per gallon");
+    [0,5000,10000,15000,20000].forEach(v=>P.xtick(v,fmt(v))); [1,2,3,4,5].forEach(v=>P.ytick(v,"$"+v));
+    const curve=(Q,sh,col,dash,w)=>{const pts=[];for(let p=0.3;p<=5.9;p+=0.1)pts.push([interp(p,Q)+sh,p]);P.path(pts,{stroke:col,"stroke-width":w,"stroke-dasharray":dash||"none"});};
+    if(dD) curve(DQ,0,ghost,"6 5",2); if(dS) curve(SQ,0,ghost,"6 5",2);
+    curve(DQ,dD,blue,null,3); curve(SQ,dS,red,null,3);
+    lab(P,Math.min(interp(0.7,DQ)+dD,19500),0.7,dD?"D₂":"D",blue,"end"); lab(P,interp(5.5,SQ)+dS+300,5.5,dS?"S₂":"S",red);
+    if(a==="NO"){P.seg(0,4,20000,4,{stroke:amber,"stroke-width":2,"stroke-dasharray":"4 4"}); P.dot(4000,4,blue); P.dot(10000,4,red); P.text(7000,4.25,"Surplus",{fill:amber,"font-size":"13","font-weight":"700","text-anchor":"middle"}); P.ytick(4,"$4");}
+    if(dD||dS) P.dot(7000,3,ghost,true);
+    P.drop(qe,pe,ink); P.dot(qe,pe,ink);
+    const arrow=(d)=>Math.abs(d)<1e-6?"":(d>0?" ▲":" ▼");
+    $("shP").textContent="$"+pe.toFixed(2)+arrow(pe-3); $("shQ").textContent=fmt(Math.round(qe/10)*10)+" gallons"+arrow(qe-7000);
+    $("shEvent").textContent=e.t; $("shCount").textContent="Event "+(k+1)+" of "+EV.length+(k>0||answered?", score "+score:"");
+    document.querySelectorAll("#shOpts button").forEach(b=>{b.disabled=answered; b.classList.toggle("on",answered&&b.dataset.ans===e.a);});
+    $("shNext").textContent=k===EV.length-1?"See your score":"Next event";
+    $("shNext").disabled=!answered;
+  }
+  document.querySelectorAll("#shOpts button").forEach(b=>b.addEventListener("click",()=>{
+    if(answered)return; const e=EV[k], ok=b.dataset.ans===e.a; if(ok)score++; answered=true;
+    $("shFb").innerHTML=""; const s=document.createElement("span"); s.className=ok?"ok":"no";
+    s.textContent=(ok?"Yes. ":"Not quite. The answer is "+NAMES[e.a].toLowerCase()+". ")+e.w; $("shFb").appendChild(s); draw();}));
+  $("shNext").onclick=()=>{
+    if(k===EV.length-1){$("shFb").innerHTML=""; const s=document.createElement("span"); s.className="ok"; s.textContent="You got "+score+" of "+EV.length+" right. Click Start over to try again."; $("shFb").appendChild(s); $("shNext").disabled=true; return;}
+    k++; answered=false; $("shFb").textContent=""; draw();};
+  $("shReset").onclick=()=>{k=0;answered=false;score=0;$("shFb").textContent="";draw();};
+  draw(); onTheme(draw);
+})();
+
+/* ---------- Ch 6, demand shocks ---------- */
+(function(){
+  const svg=$("skSvg"), P=plot(svg,{W:520,H:360,L:62,R:16,T:16,B:44,x0:500,x1:1300,y0:30,y1:44});
+  const DC={low:[35,0.01],mid:[37,0.01],high:[40,0.012]};
+  let flex=true, dem="mid";
+  function draw(){
+    const ink=css("--ink"),ghost=css("--ghost"),blue=css("--blue"),red=css("--accent");
+    P.clear(); P.axes("Cars per week","Price per car (thousands of dollars)");
+    [35,37,40].forEach(v=>P.ytick(v,"$"+v+",000"));
+    Object.keys(DC).forEach(kk=>{const [a,s]=DC[kk]; P.fn(q=>a+s*(900-q),500,1300,{stroke:kk===dem?blue:ghost,"stroke-width":kk===dem?3:1.5,"stroke-dasharray":kk===dem?"none":"5 4"});
+      const lq=kk==="high"?1240:1200; P.text(lq,a+s*(900-lq)+0.5,{low:"Low",mid:"Expected",high:"High"}[kk],{fill:kk===dem?blue:ghost,"font-size":"12","font-weight":"700"});});
+    if(flex){P.seg(900,30,900,44,{stroke:red,"stroke-width":3}); lab(P,906,43.2,"Supply",red);}
+    else{P.seg(500,37,1300,37,{stroke:red,"stroke-width":3}); lab(P,1290,37.4,"Supply at a stuck price",red,"end");}
+    const [a,s]=DC[dem]; let p,q;
+    if(flex){q=900;p=a;} else {p=37; q=900+(a-37)/s;}
+    q=Math.round(q);
+    P.drop(q,p,ink); P.dot(q,p,ink); P.xtick(q,fmt(q)); if(!flex&&q!==900)P.xtick(900,"900 planned",30);
+    $("skP").textContent="$"+fmt(p*1000); $("skQ").textContent=fmt(q);
+    let inv="None, all 900 cars sell", st;
+    if(dem==="mid") st="Demand matches the plan. The firm sells 900 cars at $37,000 each.";
+    else if(flex) st=dem==="low"?"Demand comes in low, so the car maker cuts its price to $35,000 to sell all 900 cars. Output and jobs stay the same, but revenue falls.":"Demand comes in high, so the price rises to $40,000. The firm still sells its 900 cars.";
+    else if(dem==="low"){inv="200 unsold cars pile up"; st="The price stays at $37,000, so only 700 cars sell and 200 unsold cars pile up. The firm will cut production and lay off workers. This is how a demand shock with sticky prices causes a recession.";}
+    else {inv="250 cars come out of inventory"; st="The price stays at $37,000, so buyers want 1,150 cars. The firm sells 250 cars from inventory and will raise production and hire workers.";}
+    $("skInv").textContent=inv; $("skStory").textContent=st;
+  }
+  $("skFlex").onclick=()=>{flex=true;setOn(["skFlex","skStick"],"skFlex");draw();};
+  $("skStick").onclick=()=>{flex=false;setOn(["skFlex","skStick"],"skStick");draw();};
+  [["skLow","low"],["skMid","mid"],["skHigh","high"]].forEach(([id,v])=>$(id).onclick=()=>{dem=v;setOn(["skLow","skMid","skHigh"],id);draw();});
+  draw(); onTheme(draw);
+})();
+
+/* ---------- Ch 7, GDP sorter ---------- */
+(function(){
+  const IT=[
+    ["A family buys a brand-new car from a dealer.",1,"It counts as consumption (C). A new car is a final good produced this year."],
+    ["You sell your used PS5 to a friend.",0,"It does not count. The PS5 was produced and counted in an earlier year, so a secondhand sale adds nothing new."],
+    ["A bakery buys flour to make bread.",0,"It does not count by itself. Flour is an intermediate good, and its value is already in the price of the bread. Counting both would be double counting."],
+    ["A builder finishes a new house this year.",1,"It counts as investment (Ig). New residential construction is investment in GDP."],
+    ["Your grandparents send you $100 for your birthday.",0,"It does not count. It is a private transfer, so nothing was produced."],
+    ["You buy shares of Apple stock.",0,"It does not count. Buying stock is a financial transaction that only changes who owns an asset."],
+    ["Your stockbroker charges a fee to handle that trade.",1,"It counts as consumption (C). The broker produced a service this year, even though the stock itself does not count."],
+    ["A retiree receives a Social Security check.",0,"It does not count. It is a public transfer payment, not a payment for something produced."],
+    ["A city pays a public school teacher's salary.",1,"It counts as government purchases (G). The government is buying the teacher's services."],
+    ["A factory buys new machines made this year.",1,"It counts as investment (Ig). Machinery and equipment are capital goods."],
+    ["A shopper in Japan buys a tractor made in Iowa.",1,"It counts in net exports (Xn). It was produced in the United States, so it is added as an export."],
+    ["You cook dinner at home for your family.",0,"It does not count. It is a nonmarket activity, so no sale records its value, even though it is real production."]];
+  let right=0, done=0;
+  function build(){
+    right=0; done=0; const box=$("gsList"); box.innerHTML="";
+    IT.forEach(([q,a,w])=>{
+      const d=document.createElement("div"); d.className="sortitem";
+      d.innerHTML='<div class="q"></div><div class="opts"><button data-v="1">Counts</button><button data-v="0">Does not count</button></div><div class="fb" aria-live="polite"></div>';
+      d.querySelector(".q").textContent=q;
+      d.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+        if(d.dataset.done)return; d.dataset.done="1"; done++;
+        const ok=(+b.dataset.v)===a; if(ok)right++;
+        b.classList.add("on"); d.querySelectorAll("button").forEach(x=>x.disabled=true);
+        const s=document.createElement("span"); s.className=ok?"ok":"no"; s.textContent=(ok?"Yes. ":"Not quite. ")+w;
+        d.querySelector(".fb").appendChild(s); score();});
+      box.appendChild(d);});
+    score();
+  }
+  function score(){$("gsScore").textContent=right+" right out of "+done+(done===IT.length?" (all done)":", "+(IT.length-done)+" to go");}
+  $("gsReset").onclick=build; build();
+})();
+
+/* ---------- Ch 7, GDP builder ---------- */
+(function(){
+  const svg=$("gbSvg"), base={gbC:19825,gbI:5273,gbG:4990,gbX:-903};
+  const rows=[["gbC","C","--blue"],["gbI","Ig","--green"],["gbG","G","--amber"],["gbX","Xn","--accent"]];
+  function draw(){
+    const v={}; rows.forEach(r=>v[r[0]]=+$(r[0]).value);
+    const gdp=v.gbC+v.gbI+v.gbG+v.gbX;
+    rows.forEach(r=>$(r[0]+"v").textContent=(v[r[0]]<0?"−":"")+"$"+fmt(Math.abs(v[r[0]]))+"B");
+    $("gbGDP").textContent="$"+fmt(gdp)+" billion";
+    while(svg.firstChild)svg.removeChild(svg.firstChild);
+    const L=60,R=12,W=520,x0=-2500,x1=32000, X=x=>L+(x-x0)/(x1-x0)*(W-L-R);
+    const ink=css("--ink"), muted=css("--muted");
+    el("line",{x1:X(0),y1:6,x2:X(0),y2:190,stroke:muted},svg);
+    rows.concat([["gdp","GDP","--ink"]]).forEach((r,i)=>{
+      const val=r[0]==="gdp"?gdp:v[r[0]], y=8+i*36, x=Math.min(X(0),X(val)), w=Math.abs(X(val)-X(0));
+      el("rect",{x:x,y:y,width:Math.max(w,1),height:26,rx:4,fill:css(r[2]),opacity:r[0]==="gdp"?0.85:1},svg);
+      el("text",{x:L-8,y:y+18,"text-anchor":"end",fill:ink,"font-weight":"700","font-size":"14"},svg,r[1]);
+      const share=r[0]==="gdp"?"":" ("+Math.round(val/gdp*100)+"%)";
+      const tx=val>=0?X(val)+6:X(0)+6;
+      el("text",{x:Math.min(tx,W-150),y:y+18,fill:ink,"font-size":"12"},svg,(val<0?"−":"")+"$"+fmt(Math.abs(val))+"B"+share);
+    });
+  }
+  rows.forEach(r=>$(r[0]).oninput=draw);
+  $("gbReset").onclick=()=>{Object.keys(base).forEach(k=>$(k).value=base[k]);draw();};
+  draw(); onTheme(draw);
+})();
+
+/* ---------- Ch 7, real GDP ---------- */
+(function(){
+  const U=[5,7,8,10,11], PR=[10,20,25,30,28];
+  const IDX=PR.map(p=>p/PR[0]*100), NOM=U.map((u,i)=>u*PR[i]), REAL=NOM.map((n,i)=>n/(IDX[i]/100));
+  let show=[true,true,true,false,false];
+  const svg=$("rgSvg"), P=plot(svg,{W:520,H:300,L:50,R:12,T:12,B:40,x0:0.4,x1:5.6,y0:0,y1:340});
+  function build(){
+    const tb=$("rgTable").querySelector("tbody"); tb.innerHTML="";
+    U.forEach((u,i)=>{
+      const tr=document.createElement("tr");
+      const cells=[String(i+1),String(u),"$"+PR[i]];
+      cells.forEach(c=>{const td=document.createElement("td");td.textContent=c;tr.appendChild(td);});
+      ["idx","nom","real"].forEach((k,j)=>{const td=document.createElement("td");
+        if(i<3){td.textContent=[IDX,NOM,REAL][j][i].toString().replace(/^/, j===0?"":"$");}
+        else{const inp=document.createElement("input");inp.className="cell";inp.inputMode="decimal";inp.id="rg"+k+i;inp.setAttribute("aria-label",["Price index","Nominal GDP","Real GDP"][j]+" for year "+(i+1));td.appendChild(inp);}
+        tr.appendChild(td);});
+      tb.appendChild(tr);});
+  }
+  function chart(){
+    const blue=css("--blue"),red=css("--accent");
+    P.clear(); P.axes("Year","Dollars");
+    [0,100,200,300].forEach(v=>P.ytick(v,"$"+v));
+    U.forEach((u,i)=>{P.xtick(i+1,"Year "+(i+1)); if(!show[i])return;
+      P.poly([[i+1-0.32,0],[i+1-0.32,NOM[i]],[i+1-0.02,NOM[i]],[i+1-0.02,0]],{fill:red});
+      P.poly([[i+1+0.02,0],[i+1+0.02,REAL[i]],[i+1+0.32,REAL[i]],[i+1+0.32,0]],{fill:blue});});
+  }
+  const num=s=>parseFloat(String(s).replace(/[$,\s]/g,""));
+  $("rgCheck").onclick=()=>{
+    let all=true, msgs=[];
+    [3,4].forEach(i=>{let rowOk=true;["idx","nom","real"].forEach((k,j)=>{const inp=$("rg"+k+i), want=[IDX,NOM,REAL][j][i], got=num(inp.value);
+      const ok=Math.abs(got-want)<0.6; inp.style.borderColor=ok?css("--green"):css("--accent"); inp.style.borderWidth="2px"; if(!ok){rowOk=false;all=false;}});
+      if(rowOk)show[i]=true;});
+    $("rgStory").textContent=all?"All correct. Real GDP rises from $50 to $110 over five years because output more than doubled, while nominal GDP grew much faster because prices rose too. In Year 5 the price fell, so nominal GDP grew more slowly than real GDP.":"Red boxes need another try. Price index = (price ÷ $10) × 100. Nominal GDP = units × price. Real GDP = nominal GDP ÷ (price index ÷ 100), which here is the same as units × $10.";
+    chart();};
+  $("rgShow").onclick=()=>{[3,4].forEach(i=>{["idx","nom","real"].forEach((k,j)=>{const inp=$("rg"+k+i); inp.value=[IDX,NOM,REAL][j][i]; inp.style.borderColor=css("--line"); inp.style.borderWidth="1px";}); show[i]=true;}); $("rgStory").textContent="Year 4 has an index of 300, nominal GDP of $300, and real GDP of $100. Year 5 has an index of 280, nominal GDP of $308, and real GDP of $110."; chart();};
+  $("rgReset").onclick=()=>{show=[true,true,true,false,false]; build(); chart(); $("rgStory").textContent="Price index = (this year's price ÷ base-year price) × 100. Real GDP = nominal GDP ÷ (price index ÷ 100).";};
+  build(); chart(); onTheme(chart);
+})();
+
+/* ---------- Ch 8, rule of 70 ---------- */
+(function(){
+  const svg=$("grSvg"), Y0=50000;
+  function draw(){
+    const a=+$("grA").value, b=+$("grB").value, yr=+$("grY").value;
+    $("grAv").textContent=a+"%"; $("grBv").textContent=b+"%"; $("grYv").textContent=yr+(yr===1?" year":" years");
+    const va=Y0*Math.pow(1+a/100,yr), vb=Y0*Math.pow(1+b/100,yr);
+    const ymax=Math.max(Y0*Math.pow(1+Math.max(a,b)/100,70),Y0*2);
+    const P=plot(svg,{W:520,H:320,L:72,R:14,T:12,B:40,x0:0,x1:70,y0:0,y1:ymax*1.05});
+    const ink=css("--ink"),red=css("--accent"),blue=css("--blue");
+    P.clear(); P.axes("Years from now","Real GDP per person");
+    [0,10,20,30,40,50,60,70].forEach(v=>P.xtick(v,String(v)));
+    const step=Math.pow(10,Math.floor(Math.log10(ymax/4))), nice=Math.ceil(ymax/4/step)*step;
+    for(let v=0;v<=ymax;v+=nice)P.ytick(v,"$"+fmt(v));
+    P.fn(t=>Y0*Math.pow(1+a/100,t),0,70,{stroke:red,"stroke-width":3},140);
+    P.fn(t=>Y0*Math.pow(1+b/100,t),0,70,{stroke:blue,"stroke-width":3},140);
+    [[a,red],[b,blue]].forEach(([g,c])=>{const dt=Math.log(2)/Math.log(1+g/100); for(let n=1;n*dt<=70;n++)P.dot(n*dt,Y0*Math.pow(2,n),c,true);});
+    P.seg(yr,0,yr,ymax*1.05,{stroke:ink,"stroke-dasharray":"3 4"});
+    P.dot(yr,va,red); P.dot(yr,vb,blue);
+    $("grAd").textContent=fmt(70/a,1).replace(/\.0$/,"")+" years"; $("grBd").textContent=fmt(70/b,1).replace(/\.0$/,"")+" years";
+    $("grAi").textContent="$"+fmt(va); $("grBi").textContent="$"+fmt(vb);
+    const ra=va/Y0, rb=vb/Y0;
+    $("grStory").textContent="Both countries start at $50,000 per person. After "+yr+" years, Country A is at $"+fmt(va)+", about "+fmt(ra,1)+" times where it started, and Country B is at $"+fmt(vb)+", about "+fmt(rb,1)+" times. "+(a===b?"With the same growth rate, they stay even.":"A gap of "+fmt(Math.abs(b-a),1).replace(/\.0$/,"")+" percentage points makes Country "+(b>a?"B":"A")+" "+fmt(Math.max(va,vb)/Math.min(va,vb),1)+" times richer by then.")+" The dots mark each doubling.";
+  }
+  ["grA","grB","grY"].forEach(i=>$(i).oninput=draw);
+  draw(); onTheme(draw);
+})();
+
+/* ---------- Ch 9, business cycle ---------- */
+(function(){
+  const svg=$("bcSvg"), P=plot(svg,{W:860,H:300,L:40,R:16,T:16,B:36,x0:0,x1:100,y0:30,y1:115});
+  const g=t=>50+0.5*t+8*Math.sin(2*Math.PI*t/40), tr=t=>50+0.5*t;
+  const peaks=[12.6,52.6,92.6], troughs=[27.4,67.4];
+  function phase(t){
+    if(peaks.some(p=>Math.abs(t-p)<=1.5))return "Peak";
+    if(troughs.some(p=>Math.abs(t-p)<=1.5))return "Trough";
+    const th=((2*Math.PI*t/40)%(2*Math.PI)+2*Math.PI)%(2*Math.PI);
+    return (th>1.98&&th<4.303)?"Recession":"Expansion";
+  }
+  const INFO={Expansion:["Falls","Real GDP is growing. Firms hire, unemployment falls, and spending rises. Expansions usually last much longer than recessions."],
+    Peak:["Is low","Real GDP hits a temporary high. The economy may be at or near full employment, and inflation pressure can build."],
+    Recession:["Rises","Real GDP falls for six months or more. Firms cut output and jobs, so unemployment rises. Durable goods like cars and appliances are hit hardest."],
+    Trough:["Is high","Real GDP bottoms out. Unemployment is high, but the economy is about to start growing again."]};
+  function draw(){
+    const ink=css("--ink"),ghost=css("--ghost"),blue=css("--blue"),red=css("--accent");
+    const t=+$("bcT").value, ph=phase(t);
+    P.clear(); P.axes("Time","Real GDP");
+    [[12.6,27.4],[52.6,67.4],[92.6,100]].forEach(([a,b])=>P.poly([[a,30],[a,115],[b,115],[b,30]],{fill:css("--accent-soft"),stroke:"none"}));
+    P.fn(tr,0,100,{stroke:ghost,"stroke-width":2,"stroke-dasharray":"6 5"}); P.text(99,tr(99)-3,"Growth trend",{fill:ghost,"font-size":"12","text-anchor":"end"});
+    P.fn(g,0,100,{stroke:blue,"stroke-width":3},300);
+    peaks.forEach(p=>P.text(p,g(p)+4,"Peak",{fill:ink,"font-size":"12","font-weight":"700","text-anchor":"middle"}));
+    troughs.forEach(p=>P.text(p,g(p)-6,"Trough",{fill:ink,"font-size":"12","font-weight":"700","text-anchor":"middle"}));
+    P.text(20,110,"Recession",{fill:red,"font-size":"12","text-anchor":"middle"}); P.text(60,110,"Recession",{fill:red,"font-size":"12","text-anchor":"middle"});
+    P.seg(t,30,t,115,{stroke:ink,"stroke-dasharray":"3 4"}); P.dot(t,g(t),red);
+    $("bcTv").textContent=ph; $("bcPh").textContent=ph; $("bcU").textContent=INFO[ph][0]; $("bcStory").textContent=INFO[ph][1];
+  }
+  $("bcT").oninput=draw; draw(); onTheme(draw);
+})();
+
+/* ---------- Ch 9, unemployment ---------- */
+(function(){
+  const svg=$("unSvg"), BASE={u16:70.5,nilf:101.3,emp:161.2,un:7.1};
+  let s=Object.assign({},BASE), last=null;
+  const r1=x=>Math.round(x*10)/10;
+  function draw(){
+    const lf=s.emp+s.un, rate=s.un/lf*100;
+    $("unLF").textContent=r1(lf).toFixed(1)+" million"; $("unR").textContent=rate.toFixed(1)+"%";
+    while(svg.firstChild)svg.removeChild(svg.firstChild);
+    const ink=css("--ink"),muted=css("--muted");
+    const parts=[["Under 16 or in institutions",s.u16,"--ghost"],["Not in labor force",s.nilf,"--blue"],["Employed",s.emp,"--green"],["Unemployed",s.un,"--accent"]];
+    const tot=parts.reduce((a,p)=>a+p[1],0), L=10, W=500;
+    parts.forEach((p,i)=>{
+      const y=14+i*52, w=p[1]/tot*W;
+      el("rect",{x:L,y:y+18,width:Math.max(w,2),height:24,rx:4,fill:css(p[2]),stroke:css("--line")},svg);
+      el("text",{x:L,y:y+12,fill:ink,"font-size":"13","font-weight":"700"},svg,p[0]);
+      el("text",{x:L+Math.max(w,2)+8,y:y+35,fill:ink,"font-size":"13"},svg,r1(p[1]).toFixed(1)+" million");
+    });
+    el("text",{x:L,y:250,fill:muted,"font-size":"12"},svg,"Labor force = employed + unemployed = "+r1(lf).toFixed(1)+" million");
+    const R=rate.toFixed(1)+"%";
+    $("unStory").textContent={
+      null:"In 2024, 7.1 million people were unemployed out of a labor force of 168.3 million, an unemployment rate of 4.2%. People under 16, in institutions, or not looking for work are not in the labor force.",
+      lay:"Layoffs move people from employed to unemployed. The labor force stays the same size, and the rate rises to "+R+".",
+      hire:"Hiring moves people from unemployed to employed. The labor force stays the same size, and the rate falls to "+R+".",
+      disc:"These people stopped looking, so they leave the labor force. They are no longer counted as unemployed, and the rate falls to "+R+" even though nobody found a job. They are discouraged workers, and the official rate hides them.",
+      join:"Students who start looking for work join the labor force as unemployed. The rate rises to "+R+" even though nobody lost a job."}[last];
+    $("unLay").disabled=s.emp<1; $("unHire").disabled=s.un<1; $("unDisc").disabled=s.un<1; $("unJoin").disabled=s.nilf<1;
+  }
+  $("unLay").onclick=()=>{s.emp-=1;s.un+=1;last="lay";draw();};
+  $("unHire").onclick=()=>{s.un-=1;s.emp+=1;last="hire";draw();};
+  $("unDisc").onclick=()=>{s.un-=1;s.nilf+=1;last="disc";draw();};
+  $("unJoin").onclick=()=>{s.nilf-=1;s.un+=1;last="join";draw();};
+  $("unReset").onclick=()=>{s=Object.assign({},BASE);last=null;draw();};
+  draw(); onTheme(draw);
+})();
+
+/* ---------- Ch 9, CPI ---------- */
+(function(){
+  function draw(){
+    const b=+$("cpB").value, n=+$("cpN").value, w=+$("cpW").value, cpi=n/b*100, inf=cpi-100, real=w/(cpi/100), need=w*cpi/100;
+    $("cpBv").textContent="$"+b; $("cpNv").textContent="$"+n; $("cpWv").textContent="$"+fmt(w);
+    $("cpCPI").textContent=fmt(cpi,1).replace(/\.0$/,""); $("cpInf").textContent=(inf<0?"−":"")+fmt(Math.abs(inf),1).replace(/\.0$/,"")+"%";
+    $("cpReal").textContent="$"+fmt(real); $("cpNeed").textContent=need>w?"$"+fmt(need-w):"None";
+    let s="CPI = ($"+n+" ÷ $"+b+") × 100 = "+fmt(cpi,1).replace(/\.0$/,"")+". ";
+    if(inf>0.05) s+="Prices rose "+fmt(inf,1).replace(/\.0$/,"")+" percent since the base year. Your $"+fmt(w)+" now buys only what $"+fmt(real)+" bought then, so your real income is lower. To keep the same buying power, your pay would need to rise to $"+fmt(need)+".";
+    else if(inf<-0.05) s+="Prices fell, which is deflation. Your $"+fmt(w)+" now buys what $"+fmt(real)+" bought in the base year, so your real income went up even with no raise.";
+    else s+="Prices have not changed, so your nominal and real income are the same.";
+    $("cpStory").textContent=s+" Real income = nominal income ÷ (CPI ÷ 100).";
+  }
+  ["cpB","cpN","cpW"].forEach(i=>$(i).oninput=draw); draw();
+})();
+
+/* ---------- Ch 10, consumption ---------- */
+(function(){
+  const svg=$("csSvg"), P=plot(svg,{W:520,H:380,L:52,R:16,T:16,B:48,x0:350,x1:570,y0:350,y1:570});
+  let sc=0;
+  function draw(){
+    const ink=css("--ink"),ghost=css("--ghost"),blue=css("--blue"),red=css("--accent"),green=css("--green");
+    const y=+$("csY").value, C=Y=>97.5+0.75*Y+sc, c=C(y), s=y-c, be=4*(97.5+sc);
+    $("csYv").textContent=B(y); $("csC").textContent=B(c); $("csS").textContent=B(s)+(s<0?" (dissaving)":"");
+    $("csAP").textContent=(c/y).toFixed(2)+" and "+(s/y).toFixed(2);
+    P.clear(); P.axes("Disposable income (billions)","Consumption (billions)");
+    [370,410,450,490,530,570].forEach(v=>{P.xtick(v,"$"+v);P.ytick(v,"$"+v);});
+    P.seg(350,350,570,570,{stroke:ghost,"stroke-width":2}); P.text(560,566,"45°",{fill:ghost,"font-size":"13","text-anchor":"end"});
+    if(sc!==0) P.fn(Y=>97.5+0.75*Y,350,570,{stroke:ghost,"stroke-width":2,"stroke-dasharray":"6 5"});
+    P.fn(C,350,570,{stroke:blue,"stroke-width":3}); lab(P,566,C(566)-8,sc?"C₂":"C",blue,"end");
+    if(be>=350&&be<=570){P.dot(be,be,ghost,true); P.text(be+4,be-12,"Break-even",{fill:ghost,"font-size":"12"});}
+    P.seg(y,Math.min(c,y),y,Math.max(c,y),{stroke:s>=0?green:red,"stroke-width":5});
+    P.seg(y,350,y,Math.min(c,y),{stroke:ink,"stroke-dasharray":"3 4"});
+    P.dot(y,c,blue); P.text(y+6,(c+y)/2,s>=0?"Saving":"Dissaving",{fill:s>=0?green:red,"font-size":"12","font-weight":"700"});
+    let st;
+    if(Math.abs(s)<0.01) st="At "+B(y)+", households spend every dollar, so saving is zero. This is the break-even income.";
+    else if(s>0) st="At "+B(y)+", households spend "+B(c)+" and save "+B(s)+". APC = "+fmt(c,1).replace(/\.0$/,"")+" ÷ "+y+" = "+(c/y).toFixed(2)+".";
+    else st="At "+B(y)+", households spend "+B(c)+", more than their income, so they dissave "+B(-s)+" by borrowing or using past savings.";
+    st+=" Each extra $20 billion of income adds $15 billion of spending (MPC 0.75) and $5 billion of saving (MPS 0.25).";
+    if(sc>0) st+=" The whole schedule shifted up, as when households feel wealthier, so they spend more and save less at every income.";
+    if(sc<0) st+=" The whole schedule shifted down, as when households expect a recession or want to pay off debt, so they spend less at every income.";
+    $("csStory").textContent=st; $("csUp").disabled=sc>=30; $("csDn").disabled=sc<=-30;
+  }
+  $("csY").oninput=draw; $("csUp").onclick=()=>{sc+=10;draw();}; $("csDn").onclick=()=>{sc-=10;draw();};
+  draw(); onTheme(draw);
+})();
+
+/* ---------- Ch 10, investment demand ---------- */
+(function(){
+  const svg=$("ivSvg"), P=plot(svg,{W:520,H:360,L:46,R:16,T:16,B:48,x0:0,x1:60,y0:0,y1:17});
+  let sh=0;
+  function draw(){
+    const ink=css("--ink"),ghost=css("--ghost"),blue=css("--blue");
+    const i=+$("ivI").value, I=Math.max(0,40-2.5*i+sh);
+    $("ivIv").textContent=i+"%"; $("ivAmt").textContent="$"+fmt(I,1).replace(/\.0$/,"")+" billion";
+    P.clear(); P.axes("Investment (billions of dollars)","Interest rate and expected return (%)");
+    [0,10,20,30,40,50,60].forEach(v=>P.xtick(v,"$"+v)); [0,4,8,12,16].forEach(v=>P.ytick(v,v+"%"));
+    if(sh) P.fn(q=>(40-q)/2.5,0,40,{stroke:ghost,"stroke-width":2,"stroke-dasharray":"6 5"});
+    P.fn(q=>(40+sh-q)/2.5,0,40+sh,{stroke:blue,"stroke-width":3}); lab(P,40+sh-2,1.4,sh?"ID₂":"ID",blue,"end");
+    P.drop(I,i,ink); P.dot(I,i,ink);
+    let st="At a "+i+"% real interest rate, every project with an expected return of "+i+"% or more is worth doing, which adds up to $"+fmt(I,1).replace(/\.0$/,"")+" billion of investment. Lower rates make more projects worth doing, so investment rises as the interest rate falls.";
+    if(sh>0) st+=" The curve shifted right, as when firms expect higher profits, new technology appears, or business taxes fall. Firms invest more at every interest rate.";
+    if(sh<0) st+=" The curve shifted left, as when firms turn pessimistic, operating costs rise, or business taxes go up. Firms invest less at every interest rate.";
+    $("ivStory").textContent=st; $("ivR").disabled=sh>=15; $("ivL").disabled=sh<=-15;
+  }
+  $("ivI").oninput=draw; $("ivR").onclick=()=>{sh+=5;draw();}; $("ivL").onclick=()=>{sh-=5;draw();};
+  $("ivReset").onclick=()=>{sh=0;$("ivI").value=8;draw();};
+  draw(); onTheme(draw);
+})();
+
+/* ---------- Ch 11, AE model ---------- */
+(function(){
+  const svg=$("aeSvg"), P=plot(svg,{W:520,H:400,L:52,R:16,T:16,B:48,x0:350,x1:570,y0:350,y1:570});
+  const YF=510;
+  function draw(){
+    const ink=css("--ink"),ghost=css("--ghost"),blue=css("--blue"),red=css("--accent"),green=css("--green");
+    const I=+$("aeI").value, y=+$("aeY").value, AE=Y=>97.5+0.75*Y+I, eq=390+4*I, ae=AE(y), inv=y-ae;
+    $("aeIv").textContent=B(I); $("aeYv").textContent=B(y);
+    $("aeAE").textContent=B(ae); $("aeInv").textContent=Math.abs(inv)<0.01?"None":(inv>0?"+"+B(inv)+", piling up":"−"+B(-inv).replace("−","")+", running down");
+    $("aeEq").textContent=B(eq);
+    const gap=(YF-eq)/4;
+    $("aeGap").textContent=Math.abs(gap)<0.01?"At full employment":(gap>0?"Recessionary gap of "+B(gap):"Inflationary gap of "+B(-gap));
+    P.clear(); P.axes("Real GDP (billions)","Aggregate expenditures (billions)");
+    [370,410,450,490,530,570].forEach(v=>{P.xtick(v,"$"+v);P.ytick(v,"$"+v);});
+    P.seg(350,350,570,570,{stroke:ghost,"stroke-width":2}); P.text(560,566,"45°",{fill:ghost,"font-size":"13","text-anchor":"end"});
+    P.seg(YF,350,YF,570,{stroke:green,"stroke-width":2,"stroke-dasharray":"6 4"}); P.text(YF-4,560,"Full employment",{fill:green,"font-size":"12","font-weight":"700","text-anchor":"end"});
+    P.fn(Y=>97.5+0.75*Y,350,570,{stroke:ghost,"stroke-width":1.5,"stroke-dasharray":"5 4"}); P.text(566,97.5+0.75*566-8,"C",{fill:ghost,"font-size":"12","text-anchor":"end"});
+    P.fn(AE,350,570,{stroke:blue,"stroke-width":3}); lab(P,566,AE(566)+14,"C + Ig",blue,"end");
+    P.seg(y,Math.min(ae,y),y,Math.max(ae,y),{stroke:inv>0?red:green,"stroke-width":5});
+    P.seg(y,350,y,Math.min(ae,y),{stroke:ink,"stroke-dasharray":"3 4"});
+    P.dot(y,ae,ghost); P.drop(eq,eq,ink); P.dot(eq,eq,ink);
+    let st;
+    if(Math.abs(inv)<0.01) st="At "+B(y)+" of GDP, planned spending equals output, so inventories do not change. This is equilibrium.";
+    else if(inv<0) st="At "+B(y)+" of GDP, people plan to spend "+B(ae)+", more than firms produce. Inventories run down by "+B(-inv)+", so firms raise output and GDP rises toward "+B(eq)+".";
+    else st="At "+B(y)+" of GDP, people plan to spend only "+B(ae)+", less than firms produce. Unsold goods pile up in inventory ("+B(inv)+"), so firms cut output and GDP falls toward "+B(eq)+".";
+    if(Math.abs(gap)<0.01) st+=" Equilibrium GDP is right at full employment.";
+    else if(gap>0) st+=" Equilibrium GDP is "+B(eq)+", "+B(YF-eq)+" below full employment. With a multiplier of 4, AE would need to rise by "+B(gap)+" to close the gap. That is the recessionary expenditure gap.";
+    else st+=" Equilibrium GDP is "+B(eq)+", "+B(eq-YF)+" above full employment. AE would need to fall by "+B(-gap)+" to remove the inflationary expenditure gap.";
+    $("aeStory").textContent=st;
+  }
+  ["aeI","aeY"].forEach(i=>$(i).oninput=draw); draw(); onTheme(draw);
 })();
 
 })();
