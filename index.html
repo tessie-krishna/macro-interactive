@@ -485,11 +485,11 @@ button.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
     <div>
       <div class="slider"><label for="mpc"><span>MPC (share of new income spent)</span><span id="mpcVal">0.75</span></label>
         <input type="range" id="mpc" min="0.5" max="0.9" step="0.05" value="0.75"></div>
-      <div class="slider"><label for="dI"><span>New investment spending</span><span id="dIVal">$20 billion</span></label>
-        <input type="range" id="dI" min="10" max="100" step="10" value="20"></div>
+      <div class="slider"><label for="dI"><span>New investment spending</span><span id="dIVal">$5 billion</span></label>
+        <input type="range" id="dI" min="5" max="100" step="5" value="5"></div>
       <div class="stats">
         <div class="stat"><span class="k">Multiplier, 1 / (1 − MPC)</span><span class="v" id="multM">4</span></div>
-        <div class="stat"><span class="k">Final change in real GDP</span><span class="v" id="multTotal">$80 billion</span></div>
+        <div class="stat"><span class="k">Final change in real GDP</span><span class="v" id="multTotal">$20 billion</span></div>
       </div>
       <div class="small" id="multProgText">Real GDP has grown by $0 billion so far.</div>
       <div class="bar" aria-hidden="true"><div id="multBar"></div></div>
@@ -545,7 +545,7 @@ button.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
 <section class="tool" id="adas">
   <p class="chap">Chapter 12, Aggregate demand and aggregate supply</p>
   <h2>Shifts in AD and AS</h2>
-  <p class="how">Use the buttons to shift aggregate demand (AD) or short-run aggregate supply (SRAS). Watch what happens to the price level and real GDP, and compare real GDP with full employment (the LRAS line). The dashed gray lines show where the curves started. As in the textbook, prices are sticky downward, so when AD falls, real GDP drops but the price level does not. Only a rightward shift of SRAS, such as cheaper inputs, pulls the price level down.</p>
+  <p class="how">Use the buttons to shift aggregate demand (AD) or short-run aggregate supply (SRAS). Watch what happens to the price level and real GDP, and compare real GDP with full employment (the LRAS line). The dashed gray lines show where the curves started. As in the textbook, prices are sticky downward, so when AD decreases on its own, real GDP drops but the price level does not change. When both curves shift, the result depends on which shift is bigger.</p>
   <div class="grid2">
     <div>
       <svg id="adasSvg" viewBox="0 0 520 400" role="img" aria-label="Aggregate demand and aggregate supply graph"></svg>
@@ -1030,8 +1030,8 @@ document.querySelectorAll("[data-quiz]").forEach(q=>{
     curve(AS,s,red,null,3,g);
     labelAt(AD,a,P=>(9-P)/0.8,1.6,"AD",blue);
     labelAt(AS,s,P=>(P-1)/0.8,8.6,"SRAS",red);
-    const e0=eq(0,0), ef=eq(a,s), sticky=(a<0&&s<=0&&ef.p<5), e1=sticky?{y:5+a,p:5}:ef;
-    if(sticky){el("line",{x1:L,y1:Y(5),x2:X(5),y2:Y(5),stroke:css("--amber"),"stroke-width":2,"stroke-dasharray":"2 4"},svg); el("text",{x:L+4,y:Y(5)-6,fill:css("--amber"),"font-size":"12"},svg,"Prices sticky downward");}
+    const e0=eq(0,0), sticky=(a<0&&s===0), e1=sticky?{y:5+a,p:5}:eq(a,s);
+    if(sticky){el("line",{x1:L,y1:Y(5),x2:X(5),y2:Y(5),stroke:css("--amber"),"stroke-width":2,"stroke-dasharray":"2 4"},svg); el("text",{x:L+4,y:Y(5)+15,fill:css("--amber"),"font-size":"12"},svg,"Prices sticky"); el("text",{x:L+4,y:Y(5)+29,fill:css("--amber"),"font-size":"12"},svg,"downward");}
     function dot(e,col,lp,ly,faded){
       el("line",{x1:L,y1:Y(e.p),x2:X(e.y),y2:Y(e.p),stroke:col,"stroke-dasharray":"3 4",opacity:faded?0.7:1},svg);
       el("line",{x1:X(e.y),y1:Y(e.p),x2:X(e.y),y2:T+ph,stroke:col,"stroke-dasharray":"3 4",opacity:faded?0.7:1},svg);
@@ -1052,8 +1052,8 @@ document.querySelectorAll("[data-quiz]").forEach(q=>{
     else if(s===0&&a<0) st="AD moved left. Prices are sticky downward, so the price level stays at P₁ and real GDP falls by the full shift. Less spending drops real GDP below full employment, so unemployment rises. This is a recession with a recessionary gap.";
     else if(a===0&&s<0) st="SRAS moved left. Higher input costs, like oil or wages, raise the price level and lower real GDP at the same time. This is cost-push inflation, sometimes called stagflation.";
     else if(a===0&&s>0) st="SRAS moved right. Lower input costs, like cheaper oil, raise real GDP and lower the price level. This is good news on both fronts. In the long run, wages and input prices tend to rise back. A lasting gain needs LRAS to shift too.";
-    else if(sticky) st="Both curves moved left. The drop in AD is bigger, so on its own it would pull the price level down, but prices are sticky downward, so the price level stays at P₁. Real GDP falls, leaving a recessionary gap.";
     else st="Both curves moved. To see what happens, compare the size of the shifts. When both curves move, one of the two results (price level or real GDP) depends on which shift is bigger.";
+    if(Math.abs(a)>=3||Math.abs(s)>=3) st+=" This example allows three shifts each way. Click Start over to try again.";
     $("adasStory").textContent=st;
     $("adL").disabled=a<=-3; $("adR").disabled=a>=3; $("asL").disabled=s<=-3; $("asR").disabled=s>=3;
   }
@@ -1181,7 +1181,7 @@ const lab=(P,x,y,t,col,anchor)=>P.text(x,y,t,{fill:col,"font-weight":"700","font
         :"Too much spending has pushed real GDP to $522 billion, $12 billion past full employment, and pulled the price level up. This is demand-pull inflation. Try cutting G, raising taxes, or both.");
     } else {
       if(dG!==0) st.push((dG>0?"Raising":"Cutting")+" government spending by "+B(Math.abs(dG))+" shifts AD "+(dG>0?"right":"left")+" by "+B(Math.abs(dG))+" × "+r2(m)+eqS+B(Math.abs(dG*m))+".");
-      if(dT!==0) st.push((dT<0?"Cutting":"Raising")+" taxes by "+B(Math.abs(dT))+" changes consumption by "+mpc.toFixed(2)+" × "+B(Math.abs(dT))+" = "+B(Math.abs(dT*mpc))+", so AD shifts "+(dT<0?"right":"left")+" by "+B(Math.abs(dT*mpc*m))+". A tax change moves AD less than the same change in G, because people save part of it.");
+      if(dT!==0) st.push((dT<0?"Cutting":"Raising")+" taxes by "+B(Math.abs(dT))+" changes consumption by "+mpc.toFixed(2)+" × "+B(Math.abs(dT))+(Math.abs(Math.abs(dT*mpc)*100-Math.round(Math.abs(dT*mpc)*100))<1e-6?" = ":" ≈ ")+B(Math.abs(dT*mpc))+", so AD shifts "+(dT<0?"right":"left")+" by "+B(Math.abs(dT*mpc*m))+". A tax change moves AD less than the same change in G, because people save part of it.");
       if(!moved) st.push("The two changes cancel out, so AD does not move and real GDP stays at "+money(e.y,"billion")+". The budget still changes, though.");
       else if(Math.abs(gap)<0.5) st.push("That closes the gap. Real GDP is "+(Math.abs(gap)<0.05?"right at full employment":"within "+B(Math.abs(gap))+" of full employment, which is close enough")+(scen==="inf"?", and because prices are sticky downward, the price level stays at P₂.":"."));
       else if(scen==="rec"){
@@ -1270,6 +1270,7 @@ const lab=(P,x,y,t,col,anchor)=>P.text(x,y,t,{fill:col,"font-weight":"700","font
       ?"Nominal GDP rose, so people need more money to buy things. The transactions demand grows, money demand shifts right, and the interest rate climbs to "+r2(i)+"%. The bond price falls to about "+money(bp)+"."
       :"Nominal GDP fell, so people need less money to buy things. Money demand shifts left, and the interest rate falls to "+r2(i)+"%. The bond price rises to about "+money(bp)+".";
     else s="Both the money supply and money demand moved. The interest rate is now "+r2(i)+"% and the $50 bond sells for about "+money(bp)+". Bond prices and interest rates still move in opposite directions.";
+    if(ms===dt) s+=" The money supply now sits on the vertical part of money demand, where the interest rate tops out at 10%. In this example the money supply can't fall below that line and money demand can't move past it, so Less and Higher are off for now.";
     $("mmStory").textContent=s;
     $("mmSL").disabled=ms<=125||ms-25<dt; $("mmSR").disabled=ms>=275; $("mmGL").disabled=dt<=50; $("mmGR").disabled=dt>=150||dt+25>ms;
     $("mmParts").textContent=parts?"Hide Dt and Da":"Show Dt and Da"; $("mmParts").classList.toggle("on",parts);
@@ -1455,7 +1456,7 @@ const lab=(P,x,y,t,col,anchor)=>P.text(x,y,t,{fill:col,"font-weight":"700","font
       P.text((qs+qd)/2,y-3,"Imports",{fill:ink,"font-size":"12","text-anchor":"middle"});
     }
     P.dot(qs,pt,red); P.dot(qd,pt,blue);
-    P.ytick(PW,"$20"); if(t>0) P.ytick(pt,money(pt)); if(t<20) P.ytick(40,"$40");
+    P.ytick(PW,"$20"); if(t>0) P.ytick(pt,money(pt)); if(Math.abs(pt-40)>=4) P.ytick(40,"$40");
     P.xtick(qs,f1(qs)); P.xtick(qd,f1(qd),t>=15?30:16);
     let s;
     if(t===0) s="With free trade, U.S. buyers pay the world price of $20 a pair. U.S. firms make 20 million pairs, and the other 60 million pairs come from abroad. Without any trade, the price would be $40.";
@@ -1526,7 +1527,7 @@ const fmt=(x,d)=>x.toLocaleString("en-US",{minimumFractionDigits:d||0,maximumFra
            {d:"M330,40 L480,40 L480,160",t:"Revenue",x:405,y:32},
            {d:"M480,220 L480,340 L330,340",t:"Costs",x:405,y:358},
            {d:"M190,340 L40,340 L40,220",t:"Money income",x:115,y:358}];
-  const R=[{d:"M90,220 L90,315 L190,315",t:"Labor, land, capital,",t2:"entrepreneurial ability",x:140,y:284},
+  const R=[{d:"M90,220 L90,315 L190,315",t:"Labor, land, capital,",t2:"entrepreneurial ability",x:96,y:262,anchor:"start"},
            {d:"M330,315 L430,315 L430,220",t:"Resources",x:380,y:305},
            {d:"M430,160 L430,65 L330,65",t:"Goods and services",x:380,y:82},
            {d:"M190,65 L90,65 L90,160",t:"Goods and services",x:140,y:82}];
@@ -1550,8 +1551,8 @@ const fmt=(x,d)=>x.toLocaleString("en-US",{minimumFractionDigits:d||0,maximumFra
     const drawSet=(arr,col,head,isMode)=>arr.forEach((a,i)=>{
       const active=isMode&&step===i+1, op=step===0?1:(isMode?(active?1:0.45):0.15);
       el("path",{d:a.d,fill:"none",stroke:col,"stroke-width":active?5:3,opacity:op,"marker-end":"url(#"+head+")"},svg);
-      el("text",{x:a.x,y:a.y,"text-anchor":"middle",fill:col,"font-size":"11","font-weight":active?"700":"500",opacity:op},svg,a.t);
-      if(a.t2) el("text",{x:a.x,y:a.y+12,"text-anchor":"middle",fill:col,"font-size":"11","font-weight":active?"700":"500",opacity:op},svg,a.t2);
+      el("text",{x:a.x,y:a.y,"text-anchor":a.anchor||"middle",fill:col,"font-size":"11","font-weight":active?"700":"500",opacity:op},svg,a.t);
+      if(a.t2) el("text",{x:a.x,y:a.y+12,"text-anchor":a.anchor||"middle",fill:col,"font-size":"11","font-weight":active?"700":"500",opacity:op},svg,a.t2);
     });
     drawSet(M,green,"cfHg",mode==="money"); drawSet(R,blue,"cfHb",mode==="real");
     if(step>0){
@@ -1626,7 +1627,7 @@ const fmt=(x,d)=>x.toLocaleString("en-US",{minimumFractionDigits:d||0,maximumFra
   let flex=true, dem="mid";
   function draw(){
     const ink=css("--ink"),ghost=css("--ghost"),blue=css("--blue"),red=css("--accent");
-    P.clear(); P.axes("Cars per week","Price per car (thousands of dollars)");
+    P.clear(); P.axes("Cars per week","Price per car (dollars)");
     [35,37,40].forEach(v=>P.ytick(v,"$"+v+",000"));
     Object.keys(DC).forEach(kk=>{const [a,s]=DC[kk]; P.fn(q=>a+s*(900-q),500,1300,{stroke:kk===dem?blue:ghost,"stroke-width":kk===dem?3:1.5,"stroke-dasharray":kk===dem?"none":"5 4"});
       const lq=kk==="high"?1240:1200; P.text(lq,a+s*(900-lq)+0.5,{low:"Low",mid:"Expected",high:"High"}[kk],{fill:kk===dem?blue:ghost,"font-size":"12","font-weight":"700"});});
@@ -1854,7 +1855,7 @@ const fmt=(x,d)=>x.toLocaleString("en-US",{minimumFractionDigits:d||0,maximumFra
     $("cpBv").textContent="$"+b; $("cpNv").textContent="$"+n; $("cpWv").textContent="$"+fmt(w);
     $("cpCPI").textContent=fmt(cpi,1).replace(/\.0$/,""); $("cpInf").textContent=(inf<0?"−":"")+fmt(Math.abs(inf),1).replace(/\.0$/,"")+"%";
     $("cpReal").textContent="$"+fmt(real); $("cpNeed").textContent=need>w?"$"+fmt(need-w):"None";
-    let s="CPI = ($"+n+" ÷ $"+b+") × 100 = "+fmt(cpi,1).replace(/\.0$/,"")+". ";
+    let s="CPI = ($"+n+" ÷ $"+b+") × 100"+(Math.abs(cpi*10-Math.round(cpi*10))<1e-6?" = ":" ≈ ")+fmt(cpi,1).replace(/\.0$/,"")+". ";
     if(inf>0.05) s+="Prices rose "+fmt(inf,1).replace(/\.0$/,"")+" percent since the base year. Your $"+fmt(w)+" now buys only what $"+fmt(real)+" bought then, so your real income is lower. To keep the same buying power, your pay would need to rise to $"+fmt(need)+".";
     else if(inf<-0.05) s+="Prices fell, which is deflation. Your $"+fmt(w)+" now buys what $"+fmt(real)+" bought in the base year, so your real income went up even with no raise.";
     else s+="Prices have not changed, so your nominal and real income are the same.";
@@ -1883,11 +1884,12 @@ const fmt=(x,d)=>x.toLocaleString("en-US",{minimumFractionDigits:d||0,maximumFra
     P.dot(y,c,blue); if(Math.abs(s)>=0.01) P.text(y+6,(c+y)/2,s>=0?"Saving":"Dissaving",{fill:s>=0?green:red,"font-size":"12","font-weight":"700"});
     let st;
     if(Math.abs(s)<0.01) st="At "+B(y)+", households spend every dollar, so saving is zero. This is the break-even income.";
-    else if(s>0) st="At "+B(y)+", households spend "+B(c)+" and save "+B(s)+". APC = "+fmt(c,1).replace(/\.0$/,"")+" ÷ "+y+" = "+(c/y).toFixed(2)+".";
+    else if(s>0) st="At "+B(y)+", households spend "+B(c)+" and save "+B(s)+". APC = "+fmt(c,1).replace(/\.0$/,"")+" ÷ "+y+(Math.abs(c/y*100-Math.round(c/y*100))<1e-6?" = ":" ≈ ")+(c/y).toFixed(2)+".";
     else st="At "+B(y)+", households spend "+B(c)+", more than their income, so they dissave "+B(-s)+" by borrowing or using past savings.";
     st+=" Each extra $20 billion of income adds $15 billion of spending (MPC 0.75) and $5 billion of saving (MPS 0.25).";
     if(sc>0) st+=" The whole schedule shifted up, as when households feel wealthier, so they spend more and save less at every income.";
     if(sc<0) st+=" The whole schedule shifted down, as when households expect a recession or want to pay off debt, so they spend less at every income.";
+    if(Math.abs(sc)>=30) st+=" This example allows three shifts each way. Click Start over to try again.";
     $("csStory").textContent=st; $("csUp").disabled=sc>=30; $("csDn").disabled=sc<=-30;
   }
   $("csY").oninput=draw; $("csUp").onclick=()=>{sc+=10;draw();}; $("csDn").onclick=()=>{sc-=10;draw();};
@@ -1910,6 +1912,7 @@ const fmt=(x,d)=>x.toLocaleString("en-US",{minimumFractionDigits:d||0,maximumFra
     let st=I<=0?"At a "+i+"% real interest rate, no project is expected to earn that much, so investment is zero. Lower rates make more projects worth doing, so investment rises as the interest rate falls.":"At a "+i+"% real interest rate, every project with an expected return of "+i+"% or more is worth doing, which adds up to $"+fmt(I,1).replace(/\.0$/,"")+" billion of investment. Lower rates make more projects worth doing, so investment rises as the interest rate falls.";
     if(sh>0) st+=" The curve shifted right, as when firms expect higher profits, new technology appears, or business taxes fall. Firms invest more at every interest rate.";
     if(sh<0) st+=" The curve shifted left, as when firms turn pessimistic, operating costs rise, or business taxes go up. Firms invest less at every interest rate.";
+    if(Math.abs(sh)>=15) st+=" This example allows three shifts each way. Click Start over to try again.";
     $("ivStory").textContent=st; $("ivR").disabled=sh>=15; $("ivL").disabled=sh<=-15;
   }
   $("ivI").oninput=draw; $("ivR").onclick=()=>{sh+=5;draw();}; $("ivL").onclick=()=>{sh-=5;draw();};
