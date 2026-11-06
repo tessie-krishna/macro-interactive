@@ -545,7 +545,7 @@ button.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
 <section class="tool" id="adas">
   <p class="chap">Chapter 12, Aggregate demand and aggregate supply</p>
   <h2>Shifts in AD and AS</h2>
-  <p class="how">Use the buttons to shift aggregate demand (AD) or short-run aggregate supply (SRAS). Watch what happens to the price level and real GDP, and compare real GDP with full employment (the LRAS line). The dashed gray lines show where the curves started. As in the textbook, prices are sticky downward, so when AD falls, real GDP drops but the price level does not.</p>
+  <p class="how">Use the buttons to shift aggregate demand (AD) or short-run aggregate supply (SRAS). Watch what happens to the price level and real GDP, and compare real GDP with full employment (the LRAS line). The dashed gray lines show where the curves started. As in the textbook, prices are sticky downward, so when AD falls, real GDP drops but the price level does not. Only a rightward shift of SRAS, such as cheaper inputs, pulls the price level down.</p>
   <div class="grid2">
     <div>
       <svg id="adasSvg" viewBox="0 0 520 400" role="img" aria-label="Aggregate demand and aggregate supply graph"></svg>
@@ -580,7 +580,7 @@ button.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
 <section class="tool" id="fiscal">
   <p class="chap">Chapter 13, Fiscal policy, deficits, and debt</p>
   <h2>Close the gap with fiscal policy</h2>
-  <p class="how">Pick a starting point. In a recession, real GDP sits below full employment. With demand-pull inflation, it sits above. Then change government spending (G) or taxes and watch AD shift along AS, the short-run aggregate supply curve. Every dollar of new spending moves AD by the multiplier, so a small policy change goes a long way. Prices are sticky downward here, as in the textbook, so cutting AD lowers output but not the price level.</p>
+  <p class="how">Pick a starting point. In a recession, real GDP sits below full employment. With demand-pull inflation, it sits above. Then change government spending (G) or taxes and watch AD shift and the economy move along AS, the short-run aggregate supply curve. Every dollar of new spending moves AD by the multiplier, so a small policy change goes a long way. Prices are sticky downward here, as in the textbook, so cutting AD lowers output but not the price level.</p>
   <div class="controls" style="margin-top:0">
     <div class="group"><span class="lab">Start in</span><button id="fsRec" class="on">Recession</button><button id="fsInf">Inflation</button></div>
     <button id="fsReset">Start over</button>
@@ -636,7 +636,7 @@ button.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
         <div class="group"><span class="lab">Tax system</span><button id="stProg" class="on">Progressive</button><button id="stProp">Proportional</button><button id="stReg">Regressive</button></div>
       </div>
       <div class="stats">
-        <div class="stat"><span class="k">Tax revenue</span><span class="v" id="stT">$100 billion</span></div>
+        <div class="stat"><span class="k">Net tax revenue (T)</span><span class="v" id="stT">$100 billion</span></div>
         <div class="stat"><span class="k">Budget</span><span class="v" id="stB">Balanced</span></div>
       </div>
       <div class="story" id="stStory" aria-live="polite"></div>
@@ -1030,7 +1030,7 @@ document.querySelectorAll("[data-quiz]").forEach(q=>{
     curve(AS,s,red,null,3,g);
     labelAt(AD,a,P=>(9-P)/0.8,1.6,"AD",blue);
     labelAt(AS,s,P=>(P-1)/0.8,8.6,"SRAS",red);
-    const sticky=(a<0&&s===0), e0=eq(0,0), e1=sticky?{y:5+a,p:5}:eq(a,s);
+    const e0=eq(0,0), ef=eq(a,s), sticky=(a<0&&s<=0&&ef.p<5), e1=sticky?{y:5+a,p:5}:ef;
     if(sticky){el("line",{x1:L,y1:Y(5),x2:X(5),y2:Y(5),stroke:css("--amber"),"stroke-width":2,"stroke-dasharray":"2 4"},svg); el("text",{x:L+4,y:Y(5)-6,fill:css("--amber"),"font-size":"12"},svg,"Prices sticky downward");}
     function dot(e,col,lp,ly,faded){
       el("line",{x1:L,y1:Y(e.p),x2:X(e.y),y2:Y(e.p),stroke:col,"stroke-dasharray":"3 4",opacity:faded?0.7:1},svg);
@@ -1052,6 +1052,7 @@ document.querySelectorAll("[data-quiz]").forEach(q=>{
     else if(s===0&&a<0) st="AD moved left. Prices are sticky downward, so the price level stays at P₁ and real GDP falls by the full shift. Less spending drops real GDP below full employment, so unemployment rises. This is a recession with a recessionary gap.";
     else if(a===0&&s<0) st="SRAS moved left. Higher input costs, like oil or wages, raise the price level and lower real GDP at the same time. This is cost-push inflation, sometimes called stagflation.";
     else if(a===0&&s>0) st="SRAS moved right. Lower input costs, like cheaper oil, raise real GDP and lower the price level. This is good news on both fronts. In the long run, wages and input prices tend to rise back. A lasting gain needs LRAS to shift too.";
+    else if(sticky) st="Both curves moved left. The drop in AD is bigger, so on its own it would pull the price level down, but prices are sticky downward, so the price level stays at P₁. Real GDP falls, leaving a recessionary gap.";
     else st="Both curves moved. To see what happens, compare the size of the shifts. When both curves move, one of the two results (price level or real GDP) depends on which shift is bigger.";
     $("adasStory").textContent=st;
     $("adL").disabled=a<=-3; $("adR").disabled=a>=3; $("asL").disabled=s<=-3; $("asR").disabled=s>=3;
@@ -1111,7 +1112,7 @@ document.querySelectorAll("[data-quiz]").forEach(q=>{
     if(n===0) s="Click Next bank to see what Bank A does with its new "+money(p.D)+" deposit.";
     else if(n===1){const f=rowFmt([bs[0].res,bs[0].loan]); s="Bank A gets "+money(p.D)+". It keeps "+pct+", or "+f[0]+", as reserves. It lends the other "+f[1]+". That loan is brand new money.";}
     else if(n<=NB){const f=rowFmt([bs[n-1].dep,bs[n-1].res,bs[n-1].loan]); s="The "+f[0]+" loan from Bank "+names[n-2]+" gets spent and deposited in Bank "+names[n-1]+". Bank "+names[n-1]+" keeps "+f[1]+" and lends "+f[2]+".";}
-    else s="Across all banks, lending creates "+money(maxL)+" of new money. That is Bank A's excess reserves ("+money(bs[0].loan)+") times the monetary multiplier ("+(Math.abs(100/p.r-Math.round(100/p.r))<1e-6?"":"about ")+(Math.round(100/p.r)/100)+"). Raise the reserve ratio and watch the multiplier shrink.";
+    else s="Across all banks, lending creates "+money(maxL)+" of new money. That is the "+money(bs[0].loan)+" Bank A lends out, times the monetary multiplier ("+(Math.abs(100/p.r-Math.round(100/p.r))<1e-6?"":"about ")+(Math.round(100/p.r)/100)+"). Raise the reserve ratio and watch the multiplier shrink.";
     $("monStory").textContent=s;
     $("monNext").disabled=n>NB;
   }
@@ -1194,8 +1195,8 @@ const lab=(P,x,y,t,col,anchor)=>P.text(x,y,t,{fill:col,"font-weight":"700","font
       }
     }
     $("fsStory").textContent=st.join(" ");
-    const g=scen==="rec"?20:12, dir=scen==="rec";
-    $("fsAns").textContent="The gap is $"+g+" billion and the multiplier is "+r2(m)+". "+(dir?"Raise":"Cut")+" G by $"+g+" ÷ "+r2(m)+eqS+B(g/m)+", or "+(dir?"cut":"raise")+" taxes by $"+g+" ÷ ("+mpc.toFixed(2)+" × "+r2(m)+")"+eqS+B(g/(mpc*m))+". A mix of the two works too."+((g/m>8+1e-9||g/(mpc*m)>8+1e-9)?" "+(g/m>8+1e-9?"Both amounts are":"The tax change is")+" more than the slider allows, so try a mix of the two.":"")+(([g/m,g/(mpc*m)].some(v=>v<=8+1e-9&&Math.abs(v*10-Math.round(v*10))>1e-6))?" The sliders move in $0.1 billion steps, so get as close as you can. Within $0.5 billion counts as closing the gap.":"");
+    const g=scen==="rec"?20:12, dir=scen==="rec", eqV=v=>(eqS===" = "&&Math.abs(v*100-Math.round(v*100))<1e-6)?" = ":" ≈ ";
+    $("fsAns").textContent="The gap is $"+g+" billion and the multiplier is "+r2(m)+". "+(dir?"Raise":"Cut")+" G by $"+g+" ÷ "+r2(m)+eqV(g/m)+B(g/m)+", or "+(dir?"cut":"raise")+" taxes by $"+g+" ÷ ("+mpc.toFixed(2)+" × "+r2(m)+")"+eqV(g/(mpc*m))+B(g/(mpc*m))+". A mix of the two works too."+(g/m>8+1e-9?" Both amounts are more than the slider allows, so try a mix of the two.":(g/(mpc*m)>8+1e-9?" The tax change is more than the slider allows, so change G alone, or try a mix of the two.":""))+(([g/m,g/(mpc*m)].some(v=>v<=8+1e-9&&Math.abs(v*10-Math.round(v*10))>1e-6))?" The sliders move in $0.1 billion steps, so get as close as you can. Within $0.5 billion counts as closing the gap.":"");
     $("fsAns").style.display=showAns?"block":"none";
     $("fsAnsBtn").textContent=showAns?"Hide the answer":"Show the answer";
   }
@@ -1226,11 +1227,11 @@ const lab=(P,x,y,t,col,anchor)=>P.text(x,y,t,{fill:col,"font-weight":"700","font
     P.xtick(500,"$500"); if(Math.abs(y-500)>=30) P.xtick(y,"$"+y);
     P.ytick(100,"$100"); if(Math.abs(d)>=8) P.ytick(t,"$"+Math.round(t));
     let s;
-    if(Math.abs(d)<1e-9) s="At $500 billion of GDP, tax revenue of $100 billion just covers government spending, so the budget is balanced. Move the slider left for a recession or right for a boom.";
-    else if(d<0) s="Real GDP fell to "+money(y,"billion")+". Incomes fell, so tax revenue dropped to "+money(t,"billion")+" on its own, and the budget shows a "+money(-d,"billion")+" deficit. Leaving that money with households softens the recession.";
-    else s="Real GDP rose to "+money(y,"billion")+". Incomes rose, so tax revenue climbed to "+money(t,"billion")+", and the budget shows a "+money(d,"billion")+" surplus. Pulling that money out cools the boom and helps hold back inflation.";
+    if(Math.abs(d)<1e-9) s="At $500 billion of GDP, net tax revenue of $100 billion just covers government spending, so the budget is balanced. Move the slider left for a recession or right for a boom.";
+    else if(d<0) s="Real GDP fell to "+money(y,"billion")+". Incomes fell, so net tax revenue dropped to "+money(t,"billion")+" on its own, and the budget shows a "+money(-d,"billion")+" deficit. Leaving that money with households softens the recession.";
+    else s="Real GDP rose to "+money(y,"billion")+". Incomes rose, so net tax revenue climbed to "+money(t,"billion")+", and the budget shows a "+money(d,"billion")+" surplus. Pulling that money out cools the boom and helps hold back inflation.";
     s+=" "+({prog:"With a progressive tax, the average tax rate rises as GDP rises, so revenue swings the most and gives the most built-in stability.",
-             prop:"With a proportional tax, the tax rate stays at 20 percent, so revenue swings less than with a progressive tax and gives some stability.",
+             prop:"With a proportional tax, net taxes stay at 20 percent of GDP, so revenue swings less than with a progressive tax and gives some stability.",
              reg:"With a regressive tax, the average tax rate falls as GDP rises, so revenue moves the least and gives the least built-in stability."})[type];
     $("stStory").textContent=s;
   }
@@ -1251,7 +1252,7 @@ const lab=(P,x,y,t,col,anchor)=>P.text(x,y,t,{fill:col,"font-weight":"700","font
     $("mmI").textContent=r2(i)+"%"; $("mmB").textContent=money(bp);
     P.clear(); P.axes("Amount of money (billions of dollars)","Interest rate (percent)");
     if(parts){
-      P.seg(dt,0,dt,12,{stroke:muted,"stroke-width":1.5,"stroke-dasharray":"5 4"}); P.text(dt+4,11.3,"Dt",{fill:muted,"font-size":"13"});
+      P.seg(dt,0,dt,12,{stroke:muted,"stroke-width":1.5,"stroke-dasharray":"5 4"}); P.text(ms-dt<15?dt-4:dt+4,11.3,"Dt",{fill:muted,"font-size":"13","text-anchor":ms-dt<15?"end":"start"});
       P.fn(q=>(250-q)/25,0,250,{stroke:muted,"stroke-width":1.5,"stroke-dasharray":"5 4"}); P.text(235,1.2,"Da",{fill:muted,"font-size":"13"});
     }
     if(ms!==200) P.seg(200,0,200,12,{stroke:ghost,"stroke-width":2,"stroke-dasharray":"6 5"});
@@ -1317,8 +1318,11 @@ const lab=(P,x,y,t,col,anchor)=>P.text(x,y,t,{fill:col,"font-weight":"700","font
     if(!last) st="Bonds start at $1,000. A bond that pays $50 a year at that price earns 5% interest. Click Fed buys bonds or Fed sells bonds.";
     else if(last==="buy") st="The Fed buys $10 billion of bonds and pays with brand new money, so bank reserves rise by $10 billion. Banks can lend out those reserves, so the money supply can grow by up to the monetary multiplier times that amount. Fed buying adds to bond demand, which pushes the bond price up to "+money(pr)+" and the interest rate down to "+i.toFixed(2)+"%. Lower rates make borrowing cheaper, which helps fight a recession.";
     else st="The Fed sells $10 billion of bonds and takes the money it receives out of circulation, so bank reserves fall by $10 billion. Banks must cut their lending, so the money supply can shrink by up to the monetary multiplier times that amount. Fed selling adds to bond supply, which pushes the bond price down to "+money(pr)+" and the interest rate up to "+i.toFixed(2)+"%. Higher rates make borrowing costlier, which helps fight inflation.";
-    if(last) st+=" So far, bank reserves have changed by "+(dm>0?"+":"")+B(dm)+".";
-    if(b>0&&s>0) st+=(b===s?" The buys and sells cancel out, so reserves and the interest rate are back where they started.":" The buys and sells partly cancel out, so only the difference counts.");
+    if(last&&b>0&&b===s) st="The Fed has now bought and sold the same amount of bonds, so the trades cancel out. Bank reserves, the bond price ("+money(pr)+"), and the interest rate ("+i.toFixed(2)+"%) are back where they started, so policy is neutral.";
+    else{
+      if(last) st+=" So far, bank reserves have changed by "+(dm>0?"+":"")+B(dm)+".";
+      if(b>0&&s>0) st+=" The buys and sells partly cancel out, so only the difference counts.";
+    }
     if(b>=3||s>=3) st+=" This example allows three trades of each kind. Click Start over to try again.";
     $("omoStory").textContent=st;
     $("omoBuy").disabled=b>=3; $("omoSell").disabled=s>=3;
@@ -1363,7 +1367,7 @@ const lab=(P,x,y,t,col,anchor)=>P.text(x,y,t,{fill:col,"font-weight":"700","font
     ];
     const txtRes=[
       "The money supply falls to $125 billion, so the interest rate rises to 10% and investment falls to $15 billion. That $5 billion drop in investment, times the multiplier of 4, shifts AD left to AD1. Real GDP falls to $880 billion, $20 billion short of full employment. Cutting the money supply when the economy is already at full employment causes a recession.",
-      "","","The money supply falls to $162.5 billion, so the interest rate rises to 7% and investment falls to $22.5 billion. That $2.5 billion drop, times the multiplier of 4, shifts AD left by $10 billion to AD4. Real GDP returns to full employment at $900 billion. Because prices are sticky downward, the price level stays at P₃. Cutting all the way back to AD2 would push real GDP down to $890 billion (the gray dot), a recession."];
+      "","","The money supply falls to $162.5 billion, so the interest rate rises to 7% and investment falls to $22.5 billion. That $2.5 billion drop, times the multiplier of 4, shifts AD left by $10 billion to AD4. Real GDP returns to full employment at $900 billion. Because prices are sticky downward, the price level stays at P₃. Cutting all the way back to AD2 would push real GDP down to $890 billion (the gray dot), a recession. Click Start over to run the chain again."];
     $("chStory").textContent=act+(last==="res"?txtRes[k]:txt[k]);
     $("chExp").disabled=k>=2; $("chRes").disabled=k<=0||k===3;
   }
