@@ -295,7 +295,7 @@ button.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
 <section class="tool" id="growth">
   <p class="chap">Chapter 8, Economic growth</p>
   <h2>The rule of 70 and the power of growth</h2>
-  <p class="how">Small differences in growth rates add up to huge differences over time. Pick two growth rates for real GDP per capita and watch how fast each one doubles. Years to double ≈ 70 ÷ the growth rate.</p>
+  <p class="how">Small differences in growth rates add up to huge differences over time. Pick two growth rates for real GDP per capita and watch how fast each one doubles. Years to double ≈ 70 ÷ the growth rate. The rule of 70 is a shortcut, so it runs a little off at high growth rates.</p>
   <div class="grid2">
     <div><svg id="grSvg" viewBox="0 0 520 320" role="img" aria-label="Real GDP per capita over 70 years"></svg>
       <div class="legend"><span><span class="sw" style="background:var(--accent)"></span>Country A</span><span><span class="sw" style="background:var(--blue)"></span>Country B</span></div></div>
@@ -330,7 +330,7 @@ button.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
   <h2>Phases of the business cycle</h2>
   <p class="how">Real GDP grows over time, but not smoothly. Drag the slider to move through time and watch the phase change. Notice what usually happens to unemployment in each phase.</p>
   <svg id="bcSvg" viewBox="0 0 860 300" role="img" aria-label="Business cycle graph"></svg>
-  <div class="slider"><label for="bcT"><span>Time</span><span id="bcTv"></span></label><input type="range" id="bcT" min="0" max="100" step="1" value="10"></div>
+  <div class="slider"><label for="bcT"><span>Time</span></label><input type="range" id="bcT" min="0" max="100" step="1" value="10"></div>
   <div class="stats">
     <div class="stat"><span class="k">Phase</span><span class="v" id="bcPh">Expansion</span></div>
     <div class="stat"><span class="k">Unemployment usually</span><span class="v" id="bcU">Falls</span></div>
@@ -591,9 +591,9 @@ button.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
       <div class="slider"><label for="fsMpc"><span>MPC</span><span id="fsMpcVal">0.75</span></label>
         <input type="range" id="fsMpc" min="0.5" max="0.8" step="0.05" value="0.75"></div>
       <div class="slider"><label for="fsG"><span>Change in government spending</span><span id="fsGVal">$0 billion</span></label>
-        <input type="range" id="fsG" min="-8" max="8" step="0.5" value="0"></div>
+        <input type="range" id="fsG" min="-8" max="8" step="0.1" value="0"></div>
       <div class="slider"><label for="fsT"><span>Change in taxes</span><span id="fsTVal">$0 billion</span></label>
-        <input type="range" id="fsT" min="-8" max="8" step="0.5" value="0"></div>
+        <input type="range" id="fsT" min="-8" max="8" step="0.1" value="0"></div>
       <div class="stats">
         <div class="stat"><span class="k">AD shifts by</span><span class="v" id="fsShift">$0 billion</span></div>
         <div class="stat"><span class="k">Real GDP now</span><span class="v" id="fsY">$490 billion</span></div>
@@ -971,7 +971,7 @@ document.querySelectorAll("[data-quiz]").forEach(q=>{
     let sofar=0;
     rs.slice(0,n).forEach(r=>{sofar+=r.inc;
       const tr=document.createElement("tr");
-      [r.lab==="Rest"?"All later rounds":r.lab,money(r.inc,"B"),money(r.spent,"B"),money(r.saved,"B")].forEach(t=>{const td=document.createElement("td");td.textContent=t;tr.appendChild(td);});
+      [r.lab==="Rest"?"All later rounds":r.lab,money(r.inc,"billion"),money(r.spent,"billion"),money(r.saved,"billion")].forEach(t=>{const td=document.createElement("td");td.textContent=t;tr.appendChild(td);});
       tb.appendChild(tr);});
     $("multProgText").textContent="Real GDP has grown by "+money(sofar,"billion")+" so far, out of "+money(total,"billion")+".";
     $("multBar").style.width=(sofar/total*100)+"%";
@@ -1048,7 +1048,7 @@ document.querySelectorAll("[data-quiz]").forEach(q=>{
     else if(s===0&&a>0) st="AD moved right. More spending pushes real GDP past full employment and pulls the price level up. Economists call this demand-pull inflation. Ask yourself what could cause it, such as higher consumer confidence or a tax cut.";
     else if(s===0&&a<0) st="AD moved left. Less spending drops real GDP below full employment, so unemployment rises. This is a recession with a recessionary gap. Notice that prices fall here, but in the real world prices are often sticky downward, so output takes more of the hit.";
     else if(a===0&&s<0) st="SRAS moved left. Higher input costs, like oil or wages, raise the price level and lower real GDP at the same time. This is cost-push inflation, sometimes called stagflation.";
-    else if(a===0&&s>0) st="SRAS moved right. Lower input costs, like cheaper oil, raise real GDP and lower the price level. This is good news on both fronts.";
+    else if(a===0&&s>0) st="SRAS moved right. Lower input costs, like cheaper oil, raise real GDP and lower the price level. This is good news on both fronts. In the long run, wages and input prices tend to rise back. A lasting gain needs LRAS to shift too.";
     else st="Both curves moved. To see what happens, compare the size of the shifts. When both curves move, one of the two results (price level or real GDP) depends on which shift is bigger.";
     $("adasStory").textContent=st;
     $("adL").disabled=a<=-3; $("adR").disabled=a>=3; $("asL").disabled=s<=-3; $("asR").disabled=s>=3;
@@ -1150,7 +1150,7 @@ const lab=(P,x,y,t,col,anchor)=>P.text(x,y,t,{fill:col,"font-weight":"700","font
     $("fsShift").textContent=Math.abs(shift)<1e-9?"No shift":(shift>0?"Right ":"Left ")+B(Math.abs(shift));
     $("fsY").textContent=money(e.y,"billion");
     const gap=YF-e.y;
-    $("fsGap").textContent=Math.abs(gap)<0.05?"None":B(Math.abs(gap))+(gap>0?" below":" above");
+    $("fsGap").textContent=Math.abs(gap)<0.5?"None":B(Math.abs(gap))+(gap>0?" below":" above");
     const bud=dT-dG;
     $("fsBudget").textContent=Math.abs(bud)<1e-9?"No change":B(Math.abs(bud))+(bud<0?" toward a deficit":" toward a surplus");
     PO.y1=Math.max(10,Math.ceil(e.p+1)); const P=plot(svg,PO);
@@ -1178,7 +1178,7 @@ const lab=(P,x,y,t,col,anchor)=>P.text(x,y,t,{fill:col,"font-weight":"700","font
       if(dG!==0) st.push((dG>0?"Raising":"Cutting")+" government spending by "+B(Math.abs(dG))+" shifts AD "+(dG>0?"right":"left")+" by "+B(Math.abs(dG))+" × "+r2(m)+" = "+B(Math.abs(dG*m))+".");
       if(dT!==0) st.push((dT<0?"Cutting":"Raising")+" taxes by "+B(Math.abs(dT))+" changes consumption by "+mpc.toFixed(2)+" × "+B(Math.abs(dT))+" = "+B(Math.abs(dT*mpc))+", so AD shifts "+(dT<0?"right":"left")+" by "+B(Math.abs(dT*mpc*m))+". A tax change moves AD less than the same change in G, because people save part of it.");
       if(!moved) st.push("The two changes cancel out, so AD does not move and real GDP stays at "+money(e.y,"billion")+". The budget still changes, though.");
-      else if(Math.abs(gap)<0.05) st.push("That closes the gap. Real GDP is right at full employment"+(scen==="inf"?", and because prices are sticky downward, the price level stays at P₂.":"."));
+      else if(Math.abs(gap)<0.5) st.push("That closes the gap. Real GDP is "+(Math.abs(gap)<0.05?"right at full employment":"within "+B(Math.abs(gap))+" of full employment, which is close enough")+(scen==="inf"?", and because prices are sticky downward, the price level stays at P₂.":"."));
       else if(scen==="rec"){
         if(shift<0) st.push("That is contractionary policy, so it makes the recession worse. Real GDP falls to "+money(e.y,"billion")+".");
         else if(e.y<YF) st.push("Real GDP rises to "+money(e.y,"billion")+", but "+B(gap)+" of the gap is still open.");
@@ -1191,7 +1191,7 @@ const lab=(P,x,y,t,col,anchor)=>P.text(x,y,t,{fill:col,"font-weight":"700","font
     }
     $("fsStory").textContent=st.join(" ");
     const g=scen==="rec"?20:12, dir=scen==="rec";
-    $("fsAns").textContent="The gap is $"+g+" billion and the multiplier is "+r2(m)+". "+(dir?"Raise":"Cut")+" G by $"+g+" ÷ "+r2(m)+" = "+B(g/m)+", or "+(dir?"cut":"raise")+" taxes by $"+g+" ÷ ("+mpc.toFixed(2)+" × "+r2(m)+") = "+B(g/(mpc*m))+". A mix of the two works too.";
+    $("fsAns").textContent="The gap is $"+g+" billion and the multiplier is "+r2(m)+". "+(dir?"Raise":"Cut")+" G by $"+g+" ÷ "+r2(m)+" = "+B(g/m)+", or "+(dir?"cut":"raise")+" taxes by $"+g+" ÷ ("+mpc.toFixed(2)+" × "+r2(m)+") = "+B(g/(mpc*m))+". A mix of the two works too."+((g/m>8+1e-9||g/(mpc*m)>8+1e-9)?" "+(g/m>8+1e-9?"Both amounts are":"The tax change is")+" more than the slider allows, so try a mix of the two.":"")+(([g/m,g/(mpc*m)].some(v=>v<=8+1e-9&&Math.abs(v*10-Math.round(v*10))>1e-6))?" The sliders move in $0.1 billion steps, so get as close as you can. Within $0.5 billion counts as closing the gap.":"");
     $("fsAns").style.display=showAns?"block":"none";
     $("fsAnsBtn").textContent=showAns?"Hide the answer":"Show the answer";
   }
@@ -1227,7 +1227,7 @@ const lab=(P,x,y,t,col,anchor)=>P.text(x,y,t,{fill:col,"font-weight":"700","font
     else s="Real GDP rose to "+money(y,"billion")+". Incomes rose, so tax revenue climbed to "+money(t,"billion")+", and the budget shows a "+money(d,"billion")+" surplus. Pulling that money out cools the boom and helps hold back inflation.";
     s+=" "+({prog:"With a progressive tax, the average tax rate rises as GDP rises, so revenue swings the most and gives the most built-in stability.",
              prop:"With a proportional tax, the tax rate stays at 20 percent, so revenue swings less than with a progressive tax and gives some stability.",
-             reg:"With a regressive tax, the average tax rate falls as GDP rises, so revenue barely moves and gives the least built-in stability."})[type];
+             reg:"With a regressive tax, the average tax rate falls as GDP rises, so revenue moves the least and gives the least built-in stability."})[type];
     $("stStory").textContent=s;
   }
   const setType=(t,kk,id)=>{type=t;k=kk;setOn(["stProg","stProp","stReg"],id);draw();};
@@ -1314,6 +1314,7 @@ const lab=(P,x,y,t,col,anchor)=>P.text(x,y,t,{fill:col,"font-weight":"700","font
     else if(last==="buy") st="The Fed buys $10 billion of bonds and pays with brand new money, so bank reserves rise by $10 billion. Banks can lend out those reserves, so the money supply can grow by up to the monetary multiplier times that amount. Fed buying adds to bond demand, which pushes the bond price up to "+money(pr)+" and the interest rate down to "+i.toFixed(2)+"%. Lower rates make borrowing cheaper, which helps fight a recession.";
     else st="The Fed sells $10 billion of bonds and takes the money it receives out of circulation, so bank reserves fall by $10 billion. Banks must cut their lending, so the money supply can shrink by up to the monetary multiplier times that amount. Fed selling adds to bond supply, which pushes the bond price down to "+money(pr)+" and the interest rate up to "+i.toFixed(2)+"%. Higher rates make borrowing costlier, which helps fight inflation.";
     if(last) st+=" So far, bank reserves have changed by "+(dm>0?"+":"")+B(dm)+".";
+    if(b>0&&s>0) st+=(b===s?" The buys and sells cancel out, so reserves and the interest rate are back where they started.":" The buys and sells partly cancel out, so only the difference counts.");
     if(b>=3||s>=3) st+=" This example allows three trades of each kind. Click Start over to try again.";
     $("omoStory").textContent=st;
     $("omoBuy").disabled=b>=3; $("omoSell").disabled=s>=3;
@@ -1358,7 +1359,7 @@ const lab=(P,x,y,t,col,anchor)=>P.text(x,y,t,{fill:col,"font-weight":"700","font
     ];
     const txtRes=[
       "The money supply falls to $125 billion, so the interest rate rises to 10% and investment falls to $15 billion. That $5 billion drop in investment, times the multiplier of 4, shifts AD left to AD1. Real GDP falls to $880 billion, $20 billion short of full employment. Cutting the money supply when the economy is already at full employment causes a recession.",
-      "The money supply falls to $150 billion, so the interest rate rises to 8% and investment falls to $20 billion. That $5 billion drop in investment, times the multiplier of 4, shifts AD left to AD2. In this textbook example, real GDP settles at full employment, $900 billion, and the price level falls back to P₂."];
+      "The money supply falls to $150 billion, so the interest rate rises to 8% and investment falls to $20 billion. That $5 billion drop in investment, times the multiplier of 4, shifts AD left to AD2. In this textbook example, real GDP settles at full employment, $900 billion, and the price level falls back to P₂. This assumes prices can fall. If they are sticky downward, as in Chapter 13, real GDP would fall below $900 billion instead."];
     $("chStory").textContent=act+(last==="res"?txtRes[k]:txt[k]);
     $("chExp").disabled=k>=2; $("chRes").disabled=k<=0;
   }
@@ -1683,7 +1684,7 @@ const fmt=(x,d)=>x.toLocaleString("en-US",{minimumFractionDigits:d||0,maximumFra
   function draw(){
     const v={}; rows.forEach(r=>v[r[0]]=+$(r[0]).value);
     const gdp=v.gbC+v.gbI+v.gbG+v.gbX;
-    rows.forEach(r=>$(r[0]+"v").textContent=(v[r[0]]<0?"−":"")+"$"+fmt(Math.abs(v[r[0]]))+"B");
+    rows.forEach(r=>$(r[0]+"v").textContent=(v[r[0]]<0?"−":"")+"$"+fmt(Math.abs(v[r[0]]))+" billion");
     $("gbGDP").textContent="$"+fmt(gdp)+" billion";
     while(svg.firstChild)svg.removeChild(svg.firstChild);
     const L=60,R=12,W=520,x0=-2500,x1=Math.max(32000,gdp*1.04), X=x=>L+(x-x0)/(x1-x0)*(W-L-R);
@@ -1693,7 +1694,7 @@ const fmt=(x,d)=>x.toLocaleString("en-US",{minimumFractionDigits:d||0,maximumFra
       const val=r[0]==="gdp"?gdp:v[r[0]], y=8+i*36, x=Math.min(X(0),X(val)), w=Math.abs(X(val)-X(0));
       el("rect",{x:x,y:y,width:Math.max(w,1),height:26,rx:4,fill:css(r[2]),opacity:r[0]==="gdp"?0.85:1},svg);
       el("text",{x:L-8,y:y+18,"text-anchor":"end",fill:ink,"font-weight":"700","font-size":"14"},svg,r[1]);
-      const share=r[0]==="gdp"?"":" ("+Math.round(val/gdp*100)+"%)";
+      const pc=Math.round(val/gdp*100), share=r[0]==="gdp"?"":" ("+(pc<0?"−":"")+Math.abs(pc)+"%)";
       const tx=val>=0?X(val)+6:X(0)+6;
       el("text",{x:Math.min(tx,W-150),y:y+18,fill:ink,"font-size":"12"},svg,(val<0?"−":"")+"$"+fmt(Math.abs(val))+"B"+share);
     });
@@ -1764,7 +1765,7 @@ const fmt=(x,d)=>x.toLocaleString("en-US",{minimumFractionDigits:d||0,maximumFra
     $("grAd").textContent=fmt(70/a,1).replace(/\.0$/,"")+" years"; $("grBd").textContent=fmt(70/b,1).replace(/\.0$/,"")+" years";
     $("grAi").textContent="$"+fmt(va); $("grBi").textContent="$"+fmt(vb);
     const ra=va/Y0, rb=vb/Y0;
-    $("grStory").textContent=yr===0?"Both countries start at $50,000 per person. Move the years slider to watch them grow. The dots mark each doubling.":"Both countries start at $50,000 per person. After "+yr+(yr===1?" year":" years")+", Country A is at $"+fmt(va)+", about "+fmt(ra,1)+" times where it started, and Country B is at $"+fmt(vb)+", about "+fmt(rb,1)+" times. "+(a===b?"With the same growth rate, they stay even.":"A gap of "+fmt(Math.abs(b-a),1).replace(/\.0$/,"")+" percentage points makes Country "+(b>a?"B":"A")+" "+fmt(Math.max(va,vb)/Math.min(va,vb),1)+" times richer by then.")+" The dots mark each doubling.";
+    $("grStory").textContent=yr===0?"Both countries start at $50,000 per person. Move the years slider to watch them grow. The dots mark each doubling.":"Both countries start at $50,000 per person. After "+yr+(yr===1?" year":" years")+", Country A is at $"+fmt(va)+", about "+fmt(ra,1)+" times where it started, and Country B is at $"+fmt(vb)+", about "+fmt(rb,1)+" times. "+(a===b?"With the same growth rate, they stay even.":"A gap of "+fmt(Math.abs(b-a),1).replace(/\.0$/,"")+" percentage points means Country "+(b>a?"B":"A")+"'s income is "+fmt(Math.max(va,vb)/Math.min(va,vb),Math.max(va,vb)/Math.min(va,vb)<1.1?2:1)+" times Country "+(b>a?"A":"B")+"'s by then.")+" The dots mark each doubling.";
   }
   ["grA","grB","grY"].forEach(i=>$(i).oninput=draw);
   draw(); onTheme(draw);
@@ -1796,7 +1797,7 @@ const fmt=(x,d)=>x.toLocaleString("en-US",{minimumFractionDigits:d||0,maximumFra
     troughs.forEach(p=>P.text(p,g(p)-6,"Trough",{fill:ink,"font-size":"12","font-weight":"700","text-anchor":"middle"}));
     P.text(20,110,"Recession",{fill:red,"font-size":"12","text-anchor":"middle"}); P.text(60,110,"Recession",{fill:red,"font-size":"12","text-anchor":"middle"});
     P.seg(t,30,t,115,{stroke:ink,"stroke-dasharray":"3 4"}); P.dot(t,g(t),red);
-    $("bcTv").textContent=ph; $("bcPh").textContent=ph; $("bcU").textContent=INFO[ph][0]; $("bcStory").textContent=INFO[ph][1];
+    $("bcPh").textContent=ph; $("bcU").textContent=INFO[ph][0]; $("bcStory").textContent=INFO[ph][1];
   }
   $("bcT").oninput=draw; draw(); onTheme(draw);
 })();
@@ -1861,7 +1862,7 @@ const fmt=(x,d)=>x.toLocaleString("en-US",{minimumFractionDigits:d||0,maximumFra
     const ink=css("--ink"),ghost=css("--ghost"),blue=css("--blue"),red=css("--accent"),green=css("--green");
     const y=+$("csY").value, C=Y=>97.5+0.75*Y+sc, c=C(y), s=y-c, be=4*(97.5+sc);
     $("csYv").textContent=B(y); $("csC").textContent=B(c); $("csS").textContent=B(s)+(s<0?" (dissaving)":"");
-    $("csAP").textContent=(c/y).toFixed(2)+" and "+(s/y).toFixed(2);
+    $("csAP").textContent=(c/y).toFixed(2)+" and "+(s/y).toFixed(2).replace("-","−");
     P.clear(); P.axes("Disposable income (billions)","Consumption (billions)");
     [370,410,450,490,530,570].forEach(v=>{P.xtick(v,"$"+v);P.ytick(v,"$"+v);});
     P.seg(350,350,570,570,{stroke:ghost,"stroke-width":2}); P.text(560,566,"45°",{fill:ghost,"font-size":"13","text-anchor":"end"});
@@ -1918,7 +1919,7 @@ const fmt=(x,d)=>x.toLocaleString("en-US",{minimumFractionDigits:d||0,maximumFra
     $("aeAE").textContent=B(ae); $("aeInv").textContent=Math.abs(inv)<0.01?"None":(inv>0?"+"+B(inv)+", piling up":"−"+B(-inv).replace("−","")+", running down");
     $("aeEq").textContent=B(eq);
     const gap=(YF-eq)/4;
-    $("aeGap").textContent=Math.abs(gap)<0.01?"At full employment":(gap>0?"Recessionary gap of "+B(gap):"Inflationary gap of "+B(-gap));
+    $("aeGap").textContent=Math.abs(gap)<0.01?"At full employment":(gap>0?"Recessionary expenditure gap of "+B(gap)+" (GDP is "+B(YF-eq)+" short)":"Inflationary expenditure gap of "+B(-gap)+" (GDP is "+B(eq-YF)+" above)");
     P.clear(); P.axes("Real GDP (billions)","Aggregate expenditures (billions)");
     [370,410,450,490,530,570].forEach(v=>{P.xtick(v,"$"+v);P.ytick(v,"$"+v);});
     P.seg(350,350,570,570,{stroke:ghost,"stroke-width":2}); P.text(560,566,"45°",{fill:ghost,"font-size":"13","text-anchor":"end"});
